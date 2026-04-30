@@ -1,29 +1,18 @@
 baseURL: "https://kings591998.github.io/alshanfaricc.github.io/"
-
 languageCode: en-us
-title: ALSHANFRICC | AI & Business Intelligence
+title: ALSHANFRICC
 theme: PaperMod
+
+outputs:
+    home:
+        - HTML
+        - RSS
+        - JSON
 
 params:
     defaultTheme: dark
-    showCodeCopyButtons: true
     displayRSSLink: false
     profileMode:
         enabled: true
-        title: ALSHANFRICC
-        subtitle: "Strategic Investment Architect | AI & Cybersecurity Expert"
-        imageUrl: "https://github.com/kings591998.png"
-        buttons:
-            - name: AI Reviews
-              url: categories/ai-reviews
-            - name: Cybersecurity
-              url: categories/cybersecurity
-
-menu:
-    main:
-        - name: Finance
-          url: categories/finance
-          weight: 10
-        - name: Sourcing Data
-          url: categories/sourcing
-          weight: 20
+        title: "ALSHANFRICC"
+        subtitle: "Narrative Engineer | AI & Business Intelligence"
