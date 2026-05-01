@@ -1,96 +1,101 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALSHANFRICC | Narrative Engineering</title>
+    <title>ALSHANFRICC | Official Platform</title>
     <style>
-        :root { --gold: #D4AF37; --black: #0a0a0a; --dark-gray: #141414; --silver: #C0C0C0; --text: #f0f0f0; }
-        body { background-color: var(--black); color: var(--text); font-family: system-ui, -apple-system, sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        :root { --gold: #D4AF37; --black: #000; --sidebar-bg: #D4AF37; --main-bg: #D4AF37; }
+        body { background-color: var(--black); color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 10px; }
         
-        /* الهيكل الثلاثي */
-        .container { display: grid; grid-template-columns: 220px 1fr 220px; gap: 15px; padding: 20px; flex: 1; }
-        
-        /* المستطيل الأيمن: الأقسام */
-        .sidebar-right { background: var(--dark-gray); padding: 20px; border: 1px solid var(--gold); border-radius: 12px; height: fit-content; }
-        
-        /* المستطيل الأوسط: القراءة (الأكبر) */
-        .main-content { background: var(--dark-gray); padding: 30px; border-radius: 12px; border: 1px solid #222; line-height: 1.8; font-size: 1.1em; }
-        
-        /* المستطيل الأيسر: الأدوات والصفحات */
-        .sidebar-left { display: flex; flex-direction: column; gap: 15px; }
-        .nav-box { background: var(--dark-gray); padding: 20px; border: 1px solid var(--silver); border-radius: 12px; }
-        
-        /* الأزرار الذكية */
-        .action-btn { background: var(--gold); color: black; border: none; padding: 12px; cursor: pointer; border-radius: 8px; font-weight: bold; width: 100%; transition: 0.3s; }
-        .action-btn:hover { filter: brightness(1.2); }
+        header { background: var(--black); text-align: center; padding: 20px; border-bottom: 5px solid red; margin-bottom: 10px; }
+        header h1 { color: var(--gold); margin: 0; font-size: 2.5em; letter-spacing: 3px; }
 
-        /* أسهم التنقل أسفل المقال */
-        .post-nav { display: flex; justify-content: space-between; margin-top: 50px; padding-top: 20px; border-top: 1px solid #333; }
-        .nav-arrow { color: var(--gold); text-decoration: none; font-weight: bold; }
+        .wrapper { display: grid; grid-template-columns: 220px 1fr; gap: 10px; min-height: 90vh; }
 
-        h1, h2 { color: var(--gold); margin-top: 0; }
-        a { color: var(--silver); text-decoration: none; display: block; margin-bottom: 12px; transition: 0.2s; }
-        a:hover { color: var(--gold); padding-right: 5px; }
+        /* Sidebar Design */
+        aside { background: var(--sidebar-bg); border: 5px solid #000; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .nav-item { background: #fff; width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 25px 0 0 25px; text-align: center; font-weight: bold; border: 2px solid #000; text-decoration: none; color: #000; transition: 0.3s; }
+        .nav-item:hover { background: #eee; transform: translateX(5px); }
 
-        /* للجوال */
-        @media (max-width: 1000px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar-right, .sidebar-left { order: 2; }
-            .main-content { order: 1; }
-        }
+        .social-icons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; }
+        .social-icons a { width: 35px; height: 35px; border-radius: 50%; display: block; border: 2px solid #000; }
+
+        /* Main Content Design */
+        main { background: var(--main-bg); border: 5px solid #000; border-radius: 10px; padding: 20px; }
+        .main-header { display: grid; grid-template-columns: 1.5fr 1fr; gap: 15px; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 20px; }
+        .logo-box { border: 3px solid #000; padding: 40px; text-align: center; font-size: 1.8em; font-weight: bold; background: rgba(0,0,0,0.05); }
+        
+        .article-box { border: 3px solid #000; padding: 15px; margin-bottom: 15px; display: flex; gap: 15px; align-items: center; background: rgba(255,255,255,0.1); }
+        .article-img { width: 120px; height: 100px; border: 2px solid #000; background: #eee; }
+
+        .footer-links a { display: block; text-decoration: none; color: #000; font-size: 0.85em; margin: 5px 0; font-weight: bold; }
+        
+        .controls { display: flex; justify-content: space-between; width: 100%; margin-top: auto; padding-top: 15px; border-top: 2px solid #000; }
+        .arrow { width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; cursor: pointer; }
+        .arrow-left { border-right: 25px solid #000; }
+        .arrow-right { border-left: 25px solid #000; }
+
+        @media (max-width: 768px) { .wrapper { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-<header style="padding: 25px; text-align: center; border-bottom: 1px solid var(--gold); background: var(--dark-gray);">
-    <h1 style="margin: 0; letter-spacing: 2px;">ALSHANFRICC</h1>
-    <p style="color: var(--silver); margin: 5px 0 0;">Strategic Investment Architect | هندسة السرد</p>
+<header>
+    <h1>ALSHANFRICC</h1>
 </header>
 
-<div class="container">
-    <aside class="sidebar-right">
-        <h3>الأقسام الأساسية</h3>
-        <a href="#">• ذكاء الأعمال</a>
-        <a href="#">• هندسة السرد</a>
-        <a href="#">• الأمن السيبراني</a>
-        <a href="#">• مراجعات الذكاء الاصطناعي</a>
-        <a href="#">• استراتيجيات الاستثمار</a>
+<div class="wrapper">
+    <aside>
+        <a href="index.html" class="nav-item">Home</a>
+        <a href="#" class="nav-item">Narrative Eng.</a>
+        <a href="#" class="nav-item">Mystery Eng.</a>
+        <a href="#" class="nav-item">Investment Arch.</a>
+        <a href="#" class="nav-item">Business Intel</a>
+
+        <div class="social-icons">
+            <a href="#" style="background:#1DA1F2;"></a> <a href="#" style="background:#25D366;"></a> <a href="#" style="background:#0088cc;"></a> <a href="#" style="background:#4267B2;"></a> </div>
+
+        <div class="footer-links">
+            <a href="about.html">About Us</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="copyright.html">Copyrights</a>
+        </div>
+
+        <div class="controls">
+            <div style="text-align:center;">💡<br><small>Light</small></div>
+            <div style="text-align:center;">▲<br><small>Top</small></div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px; margin-top:15px;">
+            <div class="arrow arrow-left"></div>
+            <span style="font-size:0.8em; font-weight:bold;">Post No.</span>
+            <div class="arrow arrow-right"></div>
+        </div>
     </aside>
 
-    <main class="main-content">
-        <article>
-            <h2>مرحباً بك في المنصة الرسمية</h2>
-            <p>هنا يبدأ العمل الحقيقي. كمهندس سرد، أؤمن أن البيانات هي المادة الخام، والاستراتيجية هي البناء.</p>
-            <p>هذا المستطيل مخصص لعرض أفكارك ومقالاتك العميقة بشكل مريح للعين، بعيداً عن تشتت القوائم الجانبية.</p>
-            <p style="height: 300px; color: #555;">[سيتم إضافة المحتوى الغني هنا قريباً...]</p>
-        </article>
+    <main>
+        <div class="main-header">
+            <div class="logo-box">ALSHANFRICC Logo</div>
+            <div>
+                <h3 style="margin-top:0; background:#fff; display:inline-block; padding:2px 10px; border-radius:15px;">Latest Posts</h3>
+                <ul style="list-style:none; padding:0; font-size:0.9em; line-height:1.6;">
+                    <li>• Mystery Engineering Secrets</li>
+                    <li>• Investment Reports 2026</li>
+                    <li>• Business Intelligence Trends</li>
+                </ul>
+            </div>
+        </div>
 
-        <div class="post-nav">
-            <a href="#" class="nav-arrow">← المقال السابق</a>
-            <a href="#" class="nav-arrow">المقال التالي →</a>
+        <div class="article-box">
+            <div class="article-img"></div>
+            <div>
+                <h3>Title of the First Article... More</h3>
+                <p style="font-size:0.8em;">Brief summary of the narrative content of the article and what will be discussed here...</p>
+            </div>
         </div>
     </main>
-
-    <aside class="sidebar-left">
-        <div class="nav-box">
-            <h3>روابط سريعة</h3>
-            <a href="#">من نحن</a>
-            <a href="#">سياسة الخصوصية</a>
-            <a href="#">تواصل مع معاد</a>
-        </div>
-        
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button class="action-btn" onclick="document.body.style.filter = document.body.style.filter === 'invert(1)' ? 'invert(0)' : 'invert(1)'">💡 وضع الإضاءة</button>
-            <button class="action-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">🔝 العودة للأعلى</button>
-        </div>
-    </aside>
 </div>
-
-<footer style="text-align: center; padding: 30px; font-size: 0.9em; color: #666; border-top: 1px solid #222;">
-    © 2026 Muaad Mohammed Al-Shanfari. All Rights Reserved.
-</footer>
 
 </body>
 </html>
-
