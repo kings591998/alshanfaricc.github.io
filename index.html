@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALSHANFRICC | Narrative Engineering</title>
+    <style>
+        :root { --gold: #D4AF37; --black: #0a0a0a; --dark-gray: #141414; --silver: #C0C0C0; --text: #f0f0f0; }
+        body { background-color: var(--black); color: var(--text); font-family: system-ui, -apple-system, sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* الهيكل الثلاثي */
+        .container { display: grid; grid-template-columns: 220px 1fr 220px; gap: 15px; padding: 20px; flex: 1; }
+        
+        /* المستطيل الأيمن: الأقسام */
+        .sidebar-right { background: var(--dark-gray); padding: 20px; border: 1px solid var(--gold); border-radius: 12px; height: fit-content; }
+        
+        /* المستطيل الأوسط: القراءة (الأكبر) */
+        .main-content { background: var(--dark-gray); padding: 30px; border-radius: 12px; border: 1px solid #222; line-height: 1.8; font-size: 1.1em; }
+        
+        /* المستطيل الأيسر: الأدوات والصفحات */
+        .sidebar-left { display: flex; flex-direction: column; gap: 15px; }
+        .nav-box { background: var(--dark-gray); padding: 20px; border: 1px solid var(--silver); border-radius: 12px; }
+        
+        /* الأزرار الذكية */
+        .action-btn { background: var(--gold); color: black; border: none; padding: 12px; cursor: pointer; border-radius: 8px; font-weight: bold; width: 100%; transition: 0.3s; }
+        .action-btn:hover { filter: brightness(1.2); }
+
+        /* أسهم التنقل أسفل المقال */
+        .post-nav { display: flex; justify-content: space-between; margin-top: 50px; padding-top: 20px; border-top: 1px solid #333; }
+        .nav-arrow { color: var(--gold); text-decoration: none; font-weight: bold; }
+
+        h1, h2 { color: var(--gold); margin-top: 0; }
+        a { color: var(--silver); text-decoration: none; display: block; margin-bottom: 12px; transition: 0.2s; }
+        a:hover { color: var(--gold); padding-right: 5px; }
+
+        /* للجوال */
+        @media (max-width: 1000px) {
+            .container { grid-template-columns: 1fr; }
+            .sidebar-right, .sidebar-left { order: 2; }
+            .main-content { order: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<header style="padding: 25px; text-align: center; border-bottom: 1px solid var(--gold); background: var(--dark-gray);">
+    <h1 style="margin: 0; letter-spacing: 2px;">ALSHANFRICC</h1>
+    <p style="color: var(--silver); margin: 5px 0 0;">Strategic Investment Architect | هندسة السرد</p>
+</header>
+
+<div class="container">
+    <aside class="sidebar-right">
+        <h3>الأقسام الأساسية</h3>
+        <a href="#">• ذكاء الأعمال</a>
+        <a href="#">• هندسة السرد</a>
+        <a href="#">• الأمن السيبراني</a>
+        <a href="#">• مراجعات الذكاء الاصطناعي</a>
+        <a href="#">• استراتيجيات الاستثمار</a>
+    </aside>
+
+    <main class="main-content">
+        <article>
+            <h2>مرحباً بك في المنصة الرسمية</h2>
+            <p>هنا يبدأ العمل الحقيقي. كمهندس سرد، أؤمن أن البيانات هي المادة الخام، والاستراتيجية هي البناء.</p>
+            <p>هذا المستطيل مخصص لعرض أفكارك ومقالاتك العميقة بشكل مريح للعين، بعيداً عن تشتت القوائم الجانبية.</p>
+            <p style="height: 300px; color: #555;">[سيتم إضافة المحتوى الغني هنا قريباً...]</p>
+        </article>
+
+        <div class="post-nav">
+            <a href="#" class="nav-arrow">← المقال السابق</a>
+            <a href="#" class="nav-arrow">المقال التالي →</a>
+        </div>
+    </main>
+
+    <aside class="sidebar-left">
+        <div class="nav-box">
+            <h3>روابط سريعة</h3>
+            <a href="#">من نحن</a>
+            <a href="#">سياسة الخصوصية</a>
+            <a href="#">تواصل مع معاد</a>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button class="action-btn" onclick="document.body.style.filter = document.body.style.filter === 'invert(1)' ? 'invert(0)' : 'invert(1)'">💡 وضع الإضاءة</button>
+            <button class="action-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">🔝 العودة للأعلى</button>
+        </div>
+    </aside>
+</div>
+
+<footer style="text-align: center; padding: 30px; font-size: 0.9em; color: #666; border-top: 1px solid #222;">
+    © 2026 Muaad Mohammed Al-Shanfari. All Rights Reserved.
+</footer>
+
+</body>
+</html>
