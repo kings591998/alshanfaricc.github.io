@@ -4,138 +4,127 @@
     <meta charset="UTF-8">
     <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALSHANFRICC | Sovereign Interface</title>
+    <title>ALSHANFRICC | Official</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --gold: #D4AF37;
-            --black: #050505;
-            --glass: rgba(212, 175, 55, 0.08);
-        }
+        :root { --gold: #D4AF37; --black: #050505; }
+        body { background: var(--black); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; direction: ltr; }
+        
+        #neural-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; opacity: 0.4; }
 
-        body { 
-            background: var(--black); 
-            color: #fff; 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; 
-            direction: ltr; 
-            overflow-x: hidden;
-        }
-
-        /* خلفية الخلايا العصبية */
-        #neural-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; opacity: 0.5; }
-
-        header { text-align: center; padding: 60px 20px; }
-        header h1 { color: var(--gold); font-size: 3.5em; letter-spacing: 15px; margin: 0; text-transform: uppercase; }
+        header { text-align: center; padding: 50px 20px; }
+        .logo { color: var(--gold); font-size: 3em; letter-spacing: 12px; font-weight: bold; }
 
         /* أيقونات التواصل الفخمة */
-        .social-gold {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin: 20px 0;
+        .social-icons { display: flex; justify-content: center; gap: 20px; margin: 20px 0; }
+        .social-icons a { color: var(--gold); font-size: 1.5em; transition: 0.3s; border: 1px solid var(--gold); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; text-decoration: none; }
+        .social-icons a:hover { background: var(--gold); color: #000; box-shadow: 0 0 15px var(--gold); }
+
+        /* مستطيل المقال المطور */
+        .article-card {
+            max-width: 900px; margin: 30px auto; background: rgba(20,20,20,0.8); border: 1px solid #333;
+            display: flex; position: relative; border-radius: 4px; overflow: hidden;
         }
-        .social-gold a {
-            color: var(--gold);
-            text-decoration: none;
-            font-size: 1.2em;
-            border: 1px solid var(--gold);
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: 0.4s;
-            background: rgba(0,0,0,0.5);
+        .category-tag { 
+            position: absolute; top: 10px; right: 10px; background: var(--gold); color: #000; 
+            padding: 2px 12px; font-size: 0.7em; font-weight: bold; border-radius: 2px;
         }
-        .social-gold a:hover { background: var(--gold); color: #000; box-shadow: 0 0 15px var(--gold); }
+        .article-img { width: 300px; background: #111; border-right: 1px solid var(--gold); }
+        .article-content { padding: 25px; flex: 1; }
+        .article-content h2 { color: var(--gold); margin-top: 0; }
+        .read-more { color: var(--gold); text-decoration: none; font-weight: bold; font-size: 0.9em; border-bottom: 1px solid var(--gold); }
+
+        /* أزرار النسخ والمشاركة */
+        .card-actions { margin-top: 20px; display: flex; gap: 15px; }
+        .action-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 5px 15px; cursor: pointer; font-size: 0.8em; }
+
+        /* التنبيه المنبثق الصغير */
+        #toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--gold); color: #000; padding: 8px 20px; border-radius: 20px;
+            font-weight: bold; font-size: 0.8em; display: none; z-index: 2000;
+        }
 
         /* الأزرار العائمة المحدثة */
-        .floating-nexus {
-            position: fixed;
-            bottom: 40px;
-            left: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 1000;
-        }
-        .nexus-btn {
-            width: 55px;
-            height: 55px;
-            background: #000;
-            border: 1.5px solid var(--gold);
-            color: var(--gold);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
-        }
-        .nexus-btn:hover { background: var(--gold); color: #000; }
-        
-        .parallel-arrows { display: flex; gap: 8px; }
-        .arrow-set { font-size: 18px; font-weight: bold; }
-
-        /* الفوتر المحدث بروابط info.html */
-        footer {
-            padding: 50px;
-            border-top: 1px solid var(--gold);
-            text-align: center;
-            background: #000;
-        }
-        .footer-nav a {
-            color: #777;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 0.8em;
-            letter-spacing: 1px;
-        }
-        .footer-nav a:hover { color: var(--gold); }
+        .side-nav { position: fixed; bottom: 30px; left: 30px; display: flex; flex-direction: column; gap: 12px; }
+        .nav-btn { width: 50px; height: 50px; border-radius: 50%; border: 1.5px solid var(--gold); background: #000; color: var(--gold); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .parallel-arrows { display: flex; gap: 5px; }
     </style>
 </head>
 <body>
 
 <canvas id="neural-canvas"></canvas>
+<div id="toast">تم النسخ بنجاح</div>
 
 <header>
-    <h1>ALSHANFRICC</h1>
-    <div class="social-gold">
-        <a href="#" title="X (Twitter)">𝕏</a>
-        <a href="#" title="Telegram">ＴＧ</a>
-        <a href="#" title="WhatsApp">ＷＡ</a>
-        <a href="#" title="LinkedIn">ＩＮ</a>
+    <div class="logo">ALSHANFRICC</div>
+    <div class="social-icons">
+        <a href="#"><i class="fab fa-x-twitter"></i></a>
+        <a href="#"><i class="fab fa-telegram"></i></a>
+        <a href="#"><i class="fab fa-whatsapp"></i></a>
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
     </div>
 </header>
 
-<div class="floating-nexus">
-    <div class="nexus-btn" onclick="toggleTheme()">🌙</div>
-    <div class="parallel-arrows">
-        <div class="nexus-btn" onclick="history.back()" title="Back">⬅</div>
-        <div class="nexus-btn" title="Parallel Logic">∥</div> 
+<div class="article-card">
+    <div class="category-tag">INVESTMENT ARCH.</div>
+    <div class="article-img" style="background: url('https://via.placeholder.com/300x200/111/D4AF37') center/cover;"></div>
+    <div class="article-content">
+        <h2>The Neural Logic of Assets</h2>
+        <p>Decoding the symbolic structures within modern financial markets for 2026.</p>
+        <a href="post.html" class="read-more">READ MORE...</a>
+        <div class="card-actions">
+            <button class="action-btn" onclick="copyURL()"><i class="fas fa-copy"></i> Copy</button>
+            <button class="action-btn" onclick="share()"><i class="fas fa-share-alt"></i> Share</button>
+        </div>
     </div>
-    <div class="nexus-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})">▲</div>
+</div>
+
+<div class="side-nav">
+    <div class="nav-btn" onclick="toggleTheme()"><i class="fas fa-moon"></i></div>
+    <div class="parallel-arrows">
+        <div class="nav-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></div>
+        <div class="nav-btn">∥</div>
+    </div>
+    <div class="nav-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})"><i class="fas fa-arrow-up"></i></div>
 </div>
 
 <footer>
-    <nav class="footer-nav">
-        <a href="info.html">ABOUT</a>
-        <a href="info.html">PRIVACY</a>
-        <a href="info.html">COPYRIGHT</a>
-    </nav>
-    <p style="color:var(--gold); font-size:0.7em; margin-top:20px; opacity:0.4;">© 2026 MUAAD AL-SHANFARI</p>
+    <div style="text-align:center; padding: 40px; border-top: 1px solid var(--gold); margin-top: 50px;">
+        <a href="info.html" style="color:#777; text-decoration:none; margin:0 10px;">About</a>
+        <a href="info.html" style="color:#777; text-decoration:none; margin:0 10px;">Privacy</a>
+        <a href="info.html" style="color:#777; text-decoration:none; margin:0 10px;">Copyright</a>
+    </div>
 </footer>
 
 <script>
-    // كود الخلايا العصبية (Neural Logic)
+    // نظام التنبيه الصغير
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.style.display = 'block';
+        setTimeout(() => { t.style.display = 'none'; }, 2000);
+    }
+
+    function copyURL() {
+        navigator.clipboard.writeText(window.location.href);
+        showToast("Link Copied");
+    }
+
+    function share() {
+        if (navigator.share) {
+            navigator.share({ title: 'ALSHANFRICC', url: window.location.href });
+        } else {
+            showToast("Use Copy Link");
+        }
+    }
+
+    // كود الخلايا العصبية المدمج
     const canvas = document.getElementById('neural-canvas');
     const ctx = canvas.getContext('2d');
     let pts = [];
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.onresize = resize; resize();
-
     class P {
         constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.vx = (Math.random()-0.5)*0.3; this.vy = (Math.random()-0.5)*0.3; }
         update() { this.x += this.vx; this.y += this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
@@ -161,6 +150,5 @@
         document.body.style.filter = document.body.style.filter === 'invert(0.9) hue-rotate(180deg)' ? 'invert(0)' : 'invert(0.9) hue-rotate(180deg)';
     }
 </script>
-
 </body>
 </html>
