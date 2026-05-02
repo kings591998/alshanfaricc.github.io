@@ -1,1 +1,29 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مقال</title><style>:root{--gold:#D4AF37;--cyan:#00f2ff}body{margin:0;background:#000;color:#eee;font-family:'Tajawal',Tahoma;line-height:1.9}.container{max-width:800px;margin:auto;padding:20px}.back{color:var(--gold);text-decoration:none}h1{color:var(--gold);font-size:28px}.meta{color:#888;font-size:14px;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid #222}.toc{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.3);padding:16px;border-radius:10px;margin:20px 0}.toc a{color:var(--cyan);text-decoration:none}h2{color:var(--gold);margin-top:30px;padding-right:12px;border-right:3px solid var(--gold)}</style></head><body><div class="container"><a href="index.html" class="back">← العودة</a><div id="article"></div></div><script>const id=new URLSearchParams(location.search).get("id"),start=Date.now(),arts=JSON.parse(localStorage.alshanfricc_articles||"[]"),a=arts.find(a=>String(a.id)===String(id)||String(a._id)===String(id));if(a){a.views=(a.views||0)+1,localStorage.alshanfricc_articles=JSON.stringify(arts);let t="",s="",e=0;a.content.split("\n").forEach(a=>{if(a.startsWith("## ")){e++;const l=a.replace("## ","").trim();t+=`<li><a href="#s${e}">${l}</a></li>`,s+=`<h2 id="s${e}">${l}</h2>`}else a.trim()&&(s+=`<p>${a}</p>`)});const l=e>1?`<div class="toc"><h3>📑 فهرس</h3><ul style="list-style:none;padding:0">${t}</ul></div>`:"";document.getElementById("article").innerHTML=`<h1>${a.title}</h1><div class="meta">👁 ${a.views} • ${new Date(a.date).toLocaleDateString("ar-SA")}</div>${l}${s}`}addEventListener("pagehide",()=>{const e=Date.now()-start;if(e>5e3){const t=JSON.parse(localStorage.readSessions||"[]");t.push({id:e,duration:e,date:new Date().toISOString()}),localStorage.readSessions=JSON.stringify(t)}})</script></body></html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>مقال</title>
+<style>body{background:#000;color:#eee;font-family:'Tajawal',Tahoma;padding:20px;max-width:800px;margin:auto;line-height:1.8}h1{color:#D4AF37}a{color:#D4AF37;text-decoration:none}h2{color:#D4AF37;border-right:3px solid #D4AF37;padding-right:10px;margin-top:30px}</style>
+</head>
+<body>
+<a href="index.html">← رجوع</a>
+<div id="art"></div>
+<script>
+const id = new URLSearchParams(location.search).get('id');
+const arts = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+const a = arts.find(x=>x.id==id);
+if(a){
+  a.views = (a.views||0)+1;
+  localStorage.setItem('alshanfricc_articles', JSON.stringify(arts));
+  let html = `<h1>${a.title}</h1><p style="color:#888">المشاهدات: ${a.views}</p>`;
+  a.content.split('\n').forEach(line=>{
+    if(line.startsWith('## ')) html += `<h2>${line.replace('## ','')}</h2>`;
+    else if(line.trim()) html += `<p>${line}</p>`;
+  });
+  document.getElementById('art').innerHTML = html;
+} else {
+  document.getElementById('art').innerHTML = '<p>المقال غير موجود</p>';
+}
+</script>
+</body>
+</html>
