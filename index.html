@@ -1,1 +1,84 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ALSHANFRICC</title><link rel="manifest" href="manifest.json"><script>!function(){const e=JSON.parse(localStorage.siteLibs||"[]");e.filter(e=>e.enabled).forEach(e=>{if("js"===e.type){const t=document.createElement("script");t.src=e.url,t.async=!1,document.head.appendChild(t)}else{const t=document.createElement("link");t.rel="stylesheet",t.href=e.url,document.head.appendChild(t)}})}();const t=JSON.parse(localStorage.siteStyle||"{}");t.font&&((e=document.createElement("link")).href=`https://fonts.googleapis.com/css2?family=${t.font.replace(/ /g,"+")}&display=swap`,e.rel="stylesheet",document.head.appendChild(e),document.documentElement.style.setProperty("--site-font",`'${t.font}',Tahoma`)),t.gold&&document.documentElement.style.setProperty("--gold",t.gold),t.secondary&&document.documentElement.style.setProperty("--cyan",t.secondary);var e</script><style>:root{--gold:#D4AF37;--cyan:#00f2ff;--c1:var(--gold);--c2:var(--cyan);--site-font:'Tajawal',Tahoma}*{box-sizing:border-box}body{margin:0;background:#000;color:#eee;font-family:var(--site-font);overflow-x:hidden}#neural{position:fixed;inset:0;z-index:0;opacity:.15}#tabs{display:flex;overflow-x:auto;gap:8px;padding:12px;background:#0a0a0a;position:sticky;top:0;z-index:10;border-bottom:1px solid #222}.tab{padding:8px 16px;background:#1a1a1a;border-radius:20px;white-space:nowrap;cursor:pointer;transition:.3s;border:1px solid #333}.tab.active{background:var(--c1);color:#000;font-weight:700}#subs{display:none;gap:8px;padding:10px;background:#050505;overflow-x:auto}#subs span{background:#1a1a1a;padding:5px 12px;border-radius:15px;font-size:13px}#loader{position:fixed;inset:0;background:rgba(0,0,0,.95);display:none;place-items:center;z-index:999}.crown{width:140px;height:140px;fill:none;stroke:var(--c1);stroke-width:6;stroke-dasharray:300;animation:fill 1.8s linear infinite}@keyframes fill{to{stroke-dashoffset:-300}}main{padding:20px;position:relative;z-index:5;max-width:1000px;margin:auto}.card{background:#111;padding:18px;margin:12px 0;border-radius:12px;border-right:4px solid var(--c1);cursor:pointer;transition:.3s}.card:hover{transform:translateX(-4px);background:#151515}.pagination{display:flex;justify-content:center;gap:10px;margin:30px 0}.pagination button{padding:8px 16px;background:#1a1a1a;color:#eee;border:1px solid #333;border-radius:6px;cursor:pointer}.subscribe{background:#111;padding:20px;border-radius:12px;margin:30px 0;text-align:center;border:1px solid #222}.subscribe input{padding:10px;width:60%;max-width:300px;background:#000;color:#eee;border:1px solid #333;border-radius:6px;margin-left:8px}.subscribe button{padding:10px 20px;background:var(--c1);color:#000;border:0;border-radius:6px;font-weight:700;cursor:pointer}footer{margin-top:50px;padding:20px;text-align:center;color:#666;border-top:1px solid #222}footer a{color:#888;margin:0 12px;text-decoration:none}.socials{margin-top:15px}.socials a{color:var(--gold);margin:0 10px;font-size:22px}</style></head><body><canvas id="neural"></canvas><div id="tabs"></div><div id="subs"></div><div id="loader"><svg class="crown" viewBox="0 0 100 100"><path d="M20 70 L30 40 L50 55 L70 40 L80 70 Z"/></svg></div><main><div id="content"></div><div class="pagination"><button onclick="changePage(-1)">السابق</button><span id="pageInfo" style="padding:8px 16px;color:#888"></span><button onclick="changePage(1)">التالي</button></div><div class="subscribe"><h3 style="color:var(--c1);margin-top:0">اشترك في النشرة</h3><input id="email" type="email" placeholder="بريدك"><button onclick="subscribe()">اشترك</button></div></main><footer><div><a href="about.html">من نحن</a><a href="privacy.html">الخصوصية</a><a href="cookies.html">الكوكيز</a><a href="admin.html">الأدمن</a></div><div class="socials" id="socials"></div></footer><script>"serviceWorker"in navigator&&navigator.serviceWorker.register("sw.js");const defaultCats=[{name:"الرئيسية",subs:[]},{name:"علوم",subs:["فلك","فيزياء"]},{name:"تقنية",subs:["ذكاء","أمن"]},{name:"استثمار",subs:["أسهم","عملات"]}],cats=JSON.parse(localStorage.cats||JSON.stringify(defaultCats)),themes=JSON.parse(localStorage.themes||"{}"),icons=JSON.parse(localStorage.icons||"[]"),tabsEl=document.getElementById("tabs");tabsEl.innerHTML=cats.map((e,t)=>`<div class="tab" onclick="openTab(${t})">${e.name}</div>`).join("");let currentTab=0,currentPage=0;const pageSize=10;function openTab(e){currentTab=e,currentPage=0,document.querySelectorAll(".tab").forEach((t,a)=>t.classList.toggle("active",a===e));const t=cats[e],a=themes[t.name]||{c1:"#D4AF37",c2:"#00f2ff"};document.documentElement.style.setProperty("--c1",a.c1),document.documentElement.style.setProperty("--c2",a.c2);const s=document.getElementById("subs");t.subs&&t.subs.length?(s.innerHTML=t.subs.map(e=>`<span>${e}</span>`).join(""),s.style.display="flex",setTimeout(()=>s.style.display="none",3e3)):s.style.display="none",document.getElementById("loader").style.display="grid",setTimeout(()=>{loadArticles(),document.getElementById("loader").style.display="none"},500)}function loadArticles(){const e=JSON.parse(localStorage.alshanfricc_articles||"[]");let t=e;cats[currentTab].name!=="الرئيسية"&&(t=e.filter(e=>e.tags===cats[currentTab].name));const a=currentPage*pageSize,s=t.slice(a,a+pageSize);document.getElementById("content").innerHTML=s.map(e=>`<div class="card" onclick="location='article.html?id=${e.id||e._id}'"><h3 style="margin:0 0 8px;color:var(--c1)">${e.title}</h3><p style="margin:0;color:#aaa">${(e.content||"").replace(/## /g,"").substring(0,120)}...</p><div style="margin-top:8px;font-size:12px;color:#666">👁 ${e.views||0}</div></div>`).join("")||'<p style="text-align:center;color:#666;padding:40px">لا مقالات</p>',document.getElementById("pageInfo").textContent=`صفحة ${currentPage+1}`}function changePage(e){currentPage=Math.max(0,currentPage+e),loadArticles()}function subscribe(){const e=document.getElementById("email").value;if(!e)return alert("ادخل بريد");const t=JSON.parse(localStorage.subscribers||"[]");t.push({email:e,date:new Date().toISOString()}),localStorage.subscribers=JSON.stringify(t),alert("تم"),document.getElementById("email").value=""}document.getElementById("socials").innerHTML=icons.filter(e=>e.url).map(e=>`<a href="${e.url}" target="_blank"><i class="fab fa-${e.id}"></i></a>`).join("");const canvas=document.getElementById("neural"),ctx=canvas.getContext("2d");function resize(){canvas.width=innerWidth,canvas.height=innerHeight}addEventListener("resize",resize),resize();const nodes=[];for(let e=0;e<80;e++)nodes.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:.5-Math.random(),vy:.5-Math.random()});function animate(){ctx.clearRect(0,0,canvas.width,canvas.height),ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--c1"),ctx.globalAlpha=.1,nodes.forEach(e=>{e.x+=e.vx,e.y+=e.vy,(e.x<0||e.x>canvas.width)&&(e.vx*=-1),(e.y<0||e.y>canvas.height)&&(e.vy*=-1)});for(let e=0;e<nodes.length;e++)for(let t=e+1;t<nodes.length;t++){const a=Math.hypot(nodes[e].x-nodes[t].x,nodes[e].y-nodes[t].y);a<120&&(ctx.beginPath(),ctx.moveTo(nodes[e].x,nodes[e].y),ctx.lineTo(nodes[t].x,nodes[t].y),ctx.stroke())}requestAnimationFrame(animate)}animate(),openTab(0)</script></body></html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALSHANFRICC</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root{--gold:#D4AF37;--bg:#000;--text:#eee}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',Tahoma;transition:.3s}
+body.light{--bg:#f5f5f5;--text:#111}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#111;position:sticky;top:0;z-index:100}
+body.light header{background:#fff;border-bottom:1px solid #ddd}
+.logo{color:var(--gold);font-weight:bold;font-size:20px}
+.lightBtn{background:none;border:1px solid var(--gold);color:var(--gold);padding:6px 12px;border-radius:20px;cursor:pointer}
+#tabs{display:flex;overflow-x:auto;gap:8px;padding:10px;background:#0a0a0a}
+body.light #tabs{background:#eee}
+.tab{padding:8px 16px;background:#222;border-radius:20px;white-space:nowrap;cursor:pointer;color:#eee}
+body.light.tab{background:#ddd;color:#111}
+.tab.active{background:var(--gold);color:#000}
+main{max-width:900px;margin:auto;padding:20px}
+.card{background:#111;padding:16px;margin:12px 0;border-radius:10px;border-right:4px solid var(--gold);cursor:pointer}
+body.light.card{background:#fff;border:1px solid #ddd}
+footer{text-align:center;padding:30px;color:#888;margin-top:40px}
+footer a{color:#888;margin:0 10px;text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">ALSHANFRICC</div>
+  <button class="lightBtn" onclick="toggleLight()"><i class="fa-solid fa-sun"></i> إضاءة</button>
+</header>
+
+<div id="tabs"></div>
+<main><div id="content"></div></main>
+
+<footer>
+  <a href="about.html">من نحن</a>
+  <a href="privacy.html">الخصوصية</a>
+  <a href="cookies.html">الكوكيز</a>
+  <a href="admin.html">الأدمن</a>
+  <p>© 2026</p>
+</footer>
+
+<script>
+function toggleLight(){
+  document.body.classList.toggle('light');
+  localStorage.setItem('lightMode', document.body.classList.contains('light'));
+}
+if(localStorage.getItem('lightMode')==='true') document.body.classList.add('light');
+
+// تبويبات
+const cats = JSON.parse(localStorage.getItem('cats') || '[{"name":"الرئيسية"},{"name":"علوم"},{"name":"تقنية"}]');
+const tabs = document.getElementById('tabs');
+tabs.innerHTML = cats.map((c,i)=>`<div class="tab" onclick="openTab(${i})">${c.name}</div>`).join('');
+
+function openTab(i){
+  document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('active',idx===i));
+  loadArticles(cats[i].name);
+}
+
+function loadArticles(tag){
+  const arts = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+  const filtered = tag==='الرئيسية'? arts : arts.filter(a=>a.tags===tag);
+  document.getElementById('content').innerHTML = filtered.map(a=>`
+    <div class="card" onclick="location='article.html?id=${a.id}'">
+      <h3 style="margin:0;color:var(--gold)">${a.title}</h3>
+      <p style="color:#aaa">${(a.content||'').substring(0,100)}...</p>
+    </div>
+  `).join('') || '<p style="text-align:center;color:#666">لا توجد مقالات - اذهب للأدمن</p>';
+}
+openTab(0);
+
+// إنشاء مقالات تجريبية إذا فارغ
+if(!localStorage.getItem('alshanfricc_articles')){
+  localStorage.setItem('alshanfricc_articles', JSON.stringify([
+    {id:1,title:'مرحبا بك في ALSHANFRICC',content:'## البداية\nهذا أول مقال تجريبي\n## المميزات\nالموقع جاهز',tags:'الرئيسية',date:new Date().toISOString(),views:0}
+  ]));
+  loadArticles('الرئيسية');
+}
+</script>
+</body>
+</html>
