@@ -1,305 +1,164 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" class="notranslate">
 <head>
     <meta charset="UTF-8">
+    <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALSHANFRICC | Official Platform</title>
+    <title>ALSHANFRICC | Sovereign Interface</title>
     <style>
         :root {
             --gold: #D4AF37;
             --black: #050505;
             --glass: rgba(212, 175, 55, 0.08);
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* منع مشاكل الترجمة وتثبيت الهوية البصرية */
-        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         body { 
             background: var(--black); 
             color: #fff; 
             font-family: 'Segoe UI', sans-serif; 
             margin: 0; 
+            direction: ltr; 
             overflow-x: hidden;
-            direction: ltr; /* تثبيت الاتجاه لمنع تداخل العناصر عند الترجمة */
         }
 
-        /* خلفية الخلايا العصبية (Neural Background) */
-        #neural-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            z-index: -1;
-            width: 100%; height: 100%;
-        }
+        /* خلفية الخلايا العصبية */
+        #neural-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; opacity: 0.5; }
 
-        /* خط التقدم للتمرير (Progress Bar) */
-        #scroll-progress {
-            position: fixed;
-            top: 0; left: 0;
-            height: 4px;
-            background: linear-gradient(to right, #996515, var(--gold));
-            width: 0%;
-            z-index: 2001;
-            box-shadow: 0 0 15px var(--gold);
-        }
+        header { text-align: center; padding: 60px 20px; }
+        header h1 { color: var(--gold); font-size: 3.5em; letter-spacing: 15px; margin: 0; text-transform: uppercase; }
 
-        /* الهيدر */
-        header {
-            text-align: center;
-            padding: 60px 20px;
-            background: linear-gradient(to bottom, #000, transparent);
-        }
-        header h1 {
-            color: var(--gold);
-            font-size: clamp(2.5em, 10vw, 4em);
-            margin: 0;
-            letter-spacing: 12px;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-        }
-
-        /* المستطيلات البيضاء المتوازية (Navigation) */
-        .nav-container {
+        /* أيقونات التواصل الفخمة */
+        .social-gold {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            padding: 0 20px 50px;
+            gap: 25px;
+            margin: 20px 0;
         }
-        .nav-link {
-            background: #fff;
-            color: #000;
-            padding: 14px 35px;
-            border-radius: 2px;
-            text-decoration: none;
-            font-weight: 900;
-            font-size: 0.85em;
-            border: 2px solid var(--gold);
-            min-width: 170px;
-            text-align: center;
-            transition: var(--transition);
-        }
-        .nav-link:hover {
-            background: var(--gold);
-            color: #fff;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(212,175,55,0.2);
-        }
-
-        /* منطقة المقالات (Article Cards) */
-        .content-wrapper {
-            max-width: 1100px;
-            margin: auto;
-            padding: 20px;
-        }
-        .card {
-            background: var(--glass);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            margin-bottom: 40px;
-            display: flex;
-            border-radius: 8px;
-            overflow: hidden;
-            backdrop-filter: blur(12px);
-            position: relative;
-            transition: var(--transition);
-        }
-        .card:hover { border-color: var(--gold); transform: scale(1.01); }
-        
-        .card-image {
-            width: 320px;
-            height: 220px;
-            background: #111;
-            flex-shrink: 0;
-            border-right: 1px solid var(--gold);
-        }
-        .card-body { padding: 30px; flex-grow: 1; }
-        .card-body h2 { color: var(--gold); margin: 0 0 15px 0; font-size: 1.6em; }
-        .card-body p { color: #ccc; line-height: 1.6; font-size: 0.95em; }
-
-        /* أزرار المشاركة والنسخ */
-        .btn-group { display: flex; gap: 12px; margin-top: 20px; }
-        .action-btn {
-            background: transparent;
-            border: 1px solid var(--gold);
+        .social-gold a {
             color: var(--gold);
-            padding: 7px 18px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 0.75em;
-            font-weight: bold;
-            transition: 0.3s;
+            text-decoration: none;
+            font-size: 1.2em;
+            border: 1px solid var(--gold);
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: 0.4s;
+            background: rgba(0,0,0,0.5);
         }
-        .action-btn:hover { background: var(--gold); color: #000; }
+        .social-gold a:hover { background: var(--gold); color: #000; box-shadow: 0 0 15px var(--gold); }
 
-        /* الأزرار العائمة يساراً (Floating Controls) */
-        .sidebar-controls {
+        /* الأزرار العائمة المحدثة */
+        .floating-nexus {
             position: fixed;
             bottom: 40px;
             left: 40px;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            z-index: 3000;
+            z-index: 1000;
         }
-        .circle-btn {
+        .nexus-btn {
             width: 55px;
             height: 55px;
-            border-radius: 50%;
             background: #000;
-            border: 2px solid var(--gold);
+            border: 1.5px solid var(--gold);
             color: var(--gold);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 20px;
             transition: 0.3s;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
-        .circle-btn:hover { background: var(--gold); color: #000; transform: scale(1.1); }
-
-        /* تذييل الصفحة (Footer) */
-        footer {
-            margin-top: 80px;
-            padding: 60px 20px;
-            border-top: 1px solid var(--gold);
-            background: #000;
-            text-align: center;
-        }
-        .footer-socials { margin-bottom: 30px; display: flex; justify-content: center; gap: 20px; }
-        .footer-socials a { color: var(--gold); font-size: 1.6em; text-decoration: none; transition: 0.3s; }
-        .footer-socials a:hover { transform: translateY(-5px); opacity: 0.8; }
+        .nexus-btn:hover { background: var(--gold); color: #000; }
         
-        .footer-links a { color: #777; text-decoration: none; margin: 0 15px; font-size: 0.8em; font-weight: bold; }
-        .footer-links a:hover { color: var(--gold); }
+        .parallel-arrows { display: flex; gap: 8px; }
+        .arrow-set { font-size: 18px; font-weight: bold; }
 
-        @media (max-width: 850px) {
-            .card { flex-direction: column; }
-            .card-image { width: 100%; height: 250px; border-right: none; border-bottom: 1px solid var(--gold); }
-            .sidebar-controls { left: 20px; bottom: 20px; }
+        /* الفوتر المحدث بروابط info.html */
+        footer {
+            padding: 50px;
+            border-top: 1px solid var(--gold);
+            text-align: center;
+            background: #000;
         }
+        .footer-nav a {
+            color: #777;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.8em;
+            letter-spacing: 1px;
+        }
+        .footer-nav a:hover { color: var(--gold); }
     </style>
 </head>
 <body>
 
 <canvas id="neural-canvas"></canvas>
-<div id="scroll-progress"></div>
 
 <header>
     <h1>ALSHANFRICC</h1>
+    <div class="social-gold">
+        <a href="#" title="X (Twitter)">𝕏</a>
+        <a href="#" title="Telegram">ＴＧ</a>
+        <a href="#" title="WhatsApp">ＷＡ</a>
+        <a href="#" title="LinkedIn">ＩＮ</a>
+    </div>
 </header>
 
-<nav class="nav-container">
-    <a href="index.html" class="nav-link">HOME</a>
-    <a href="#" class="nav-link">NARRATIVE ENG.</a>
-    <a href="#" class="nav-link">MYSTERY ENG.</a>
-    <a href="#" class="nav-link">INVESTMENT ARCH.</a>
-    <a href="#" class="nav-link">BUSINESS INTEL.</a>
-</nav>
-
-<div class="content-wrapper" id="post-container">
-    <div class="card">
-        <div class="card-image" style="background: url('https://source.unsplash.com/random/800x600?tech,gold') center/cover;"></div>
-        <div class="card-body">
-            <h2>The Stone City's Testament</h2>
-            <p>Decoding the symbolic architecture of power and narrative engineering in the digital age.</p>
-            <div class="btn-group">
-                <button class="action-btn" onclick="copyLink()">Copy URL</button>
-                <button class="action-btn">Share on X</button>
-            </div>
-        </div>
+<div class="floating-nexus">
+    <div class="nexus-btn" onclick="toggleTheme()">🌙</div>
+    <div class="parallel-arrows">
+        <div class="nexus-btn" onclick="history.back()" title="Back">⬅</div>
+        <div class="nexus-btn" title="Parallel Logic">∥</div> 
     </div>
-</div>
-
-<div class="sidebar-controls">
-    <div class="circle-btn" onclick="toggleMoon()" title="Moon/Sun Mode">🌙</div>
-    <div class="circle-btn" onclick="history.back()" title="Go Back">⬅</div>
-    <div class="circle-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Top">▲</div>
+    <div class="nexus-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})">▲</div>
 </div>
 
 <footer>
-    <div class="footer-socials">
-        <a href="#">𝕏</a> <a href="#">WA</a> <a href="#">TG</a> <a href="#">FB</a>
-    </div>
-    <div class="footer-links">
-        <a href="about.html">ABOUT</a> | <a href="privacy.html">PRIVACY</a> | <a href="copyright.html">COPYRIGHT</a>
-    </div>
-    <p style="color:var(--gold); font-size:0.75em; margin-top:30px; opacity:0.6; letter-spacing: 2px;">
-        &copy; 2026 ALSHANFRICC. ARCHITECT OF GLOBAL INVESTMENTS.
-    </p>
+    <nav class="footer-nav">
+        <a href="info.html">ABOUT</a>
+        <a href="info.html">PRIVACY</a>
+        <a href="info.html">COPYRIGHT</a>
+    </nav>
+    <p style="color:var(--gold); font-size:0.7em; margin-top:20px; opacity:0.4;">© 2026 MUAAD AL-SHANFARI</p>
 </footer>
 
 <script>
-    // 1. Neural Cells Effect
+    // كود الخلايا العصبية (Neural Logic)
     const canvas = document.getElementById('neural-canvas');
     const ctx = canvas.getContext('2d');
-    let points = [];
-    const maxPoints = 70;
+    let pts = [];
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.onresize = resize; resize();
 
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    class P {
+        constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.vx = (Math.random()-0.5)*0.3; this.vy = (Math.random()-0.5)*0.3; }
+        update() { this.x += this.vx; this.y += this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
     }
-
-    class Point {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.vx = (Math.random() - 0.5) * 0.4;
-            this.vy = (Math.random() - 0.5) * 0.4;
-        }
-        move() {
-            this.x += this.vx; this.y += this.vy;
-            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-        }
-    }
-
-    function init() {
-        resize();
-        for (let i = 0; i < maxPoints; i++) points.push(new Point());
-        loop();
-    }
-
-    function loop() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = 'rgba(212, 175, 55, 0.12)';
-        ctx.fillStyle = 'rgba(212, 175, 55, 0.3)';
-        
-        points.forEach((p, i) => {
-            p.move();
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 1.2, 0, Math.PI * 2);
-            ctx.fill();
-            
-            for (let j = i + 1; j < points.length; j++) {
-                const dist = Math.hypot(p.x - points[j].x, p.y - points[j].y);
-                if (dist < 160) {
-                    ctx.beginPath();
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(points[j].x, points[j].y);
-                    ctx.stroke();
-                }
+    for(let i=0; i<60; i++) pts.push(new P());
+    function anim() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.strokeStyle = "rgba(212,175,55,0.1)";
+        ctx.fillStyle = "rgba(212,175,55,0.4)";
+        pts.forEach((p,i)=>{
+            p.update();
+            ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI*2); ctx.fill();
+            for(let j=i+1; j<pts.length; j++) {
+                let d = Math.hypot(p.x-pts[j].x, p.y-pts[j].y);
+                if(d<150) { ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); }
             }
         });
-        requestAnimationFrame(loop);
+        requestAnimationFrame(anim);
     }
-    init();
-    window.addEventListener('resize', resize);
+    anim();
 
-    // 2. Scroll Progress Bar
-    window.onscroll = () => {
-        let winScroll = document.documentElement.scrollTop;
-        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        document.getElementById("scroll-progress").style.width = (winScroll / height) * 100 + "%";
-    };
-
-    // 3. Moon Toggle Logic
-    function toggleMoon() {
+    function toggleTheme() {
         document.body.style.filter = document.body.style.filter === 'invert(0.9) hue-rotate(180deg)' ? 'invert(0)' : 'invert(0.9) hue-rotate(180deg)';
-    }
-
-    function copyLink() {
-        navigator.clipboard.writeText(window.location.href);
-        alert("Link copied to clipboard.");
     }
 </script>
 
