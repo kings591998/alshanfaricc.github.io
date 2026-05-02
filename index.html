@@ -1,64 +1,70 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" class="notranslate">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ALSHANFRICC | Core</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --gold: #D4AF37; --black: #050505; }
-        body { background: var(--black); margin: 0; overflow-x: hidden; direction: ltr; }
-        #neural-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; opacity: 0.4; pointer-events: none; }
-        .module-frame { width: 100%; border: none; display: block; overflow: hidden; }
-        #loader { position: fixed; inset: 0; background: #050505; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: 0.5s; }
+        body { background: var(--black); margin: 0; overflow-x: hidden; font-family: sans-serif; transition: 0.5s; }
+        #neural-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.4; pointer-events: none; }
+        .module-frame { width: 100%; border: none; display: block; }
+        
+        /* أزرار التحكم الجانبية - حيلة L2 */
+        .controls { position: fixed; left: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 15px; }
+        .btn { width: 40px; height: 40px; border: 1px solid var(--gold); border-radius: 50%; color: var(--gold); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(0,0,0,0.5); transition: 0.3s; }
+        .btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 15px var(--gold); }
+        
+        #scroll-pct { position: fixed; bottom: 20px; right: 30px; color: var(--gold); font-size: 0.7em; opacity: 0.6; }
+        .light-mode { filter: invert(1) hue-rotate(180deg); background: #fff; }
     </style>
 </head>
 <body>
 
-<div id="loader">
-    <div style="text-align:center;">
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="#D4AF37" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z" />
-        </svg>
-        <div style="color:#D4AF37; letter-spacing:5px; margin-top:15px; font-size:0.7em;">SYSTEM READY</div>
-    </div>
-</div>
-
 <canvas id="neural-canvas"></canvas>
 
-<iframe src="header.html" class="module-frame" style="height: 280px;"></iframe>
+<div class="controls">
+    <div class="btn" onclick="toggleLight()" title="Toggle Light"><i class="fas fa-moon"></i></div>
+    <div class="btn" onclick="window.history.back()" title="Back"><i class="fas fa-arrow-left"></i></div>
+    <div class="btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Top"><i class="fas fa-chevron-up"></i></div>
+</div>
+
+<div id="scroll-pct">0% DECODED</div>
+
+<iframe src="header.html" class="module-frame" style="height: 300px;"></iframe>
 <iframe src="articles.html" class="module-frame" style="height: 1500px;"></iframe>
-<iframe src="footer.html" class="module-frame" style="height: 200px;"></iframe>
+<iframe src="footer.html" class="module-frame" style="height: 150px;"></iframe>
 
 <script>
-    // حذف أي حماية مسببة للإزعاج والاعتماد على السكون
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            const loader = document.getElementById('loader');
-            loader.style.opacity = '0';
-            setTimeout(() => loader.style.display = 'none', 500);
-        }, 1000);
-    });
+    // حيلة إضاءة السيادة (L2)
+    function toggleLight() { document.body.classList.toggle('light-mode'); }
 
-    // كود الشبكة العصبية الهادئ
+    // عداد التمرير (L2)
+    window.onscroll = () => {
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        document.getElementById("scroll-pct").innerText = Math.round((winScroll / height) * 100) + "% DECODED";
+    };
+
+    // الشبكة العصبية (L4+L5)
     const canvas = document.getElementById('neural-canvas');
     const ctx = canvas.getContext('2d');
     let pts = [];
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.onresize = resize; resize();
     class P {
-        constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.vx=(Math.random()-0.5)*0.2; this.vy=(Math.random()-0.5)*0.2; }
+        constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.vx=(Math.random()-0.5)*0.3; this.vy=(Math.random()-0.5)*0.3; }
         update() { this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
     }
-    for(let i=0; i<40; i++) pts.push(new P());
+    for(let i=0; i<45; i++) pts.push(new P());
     function anim() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.strokeStyle = "rgba(212,175,55,0.15)";
+        ctx.clearRect(0,0,canvas.width,canvas.height); ctx.strokeStyle = "rgba(212,175,55,0.15)";
         pts.forEach((p,i)=>{
             p.update();
             for(let j=i+1; j<pts.length; j++) {
                 let d = Math.hypot(p.x-pts[j].x, p.y-pts[j].y);
-                if(d<150) { ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); }
+                if(d<160) { ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); }
             }
         });
         requestAnimationFrame(anim);
