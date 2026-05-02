@@ -1,84 +1,52 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ALSHANFRICC</title>
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<style>
-:root{--gold:#D4AF37;--bg:#000;--text:#eee}
-body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',Tahoma;transition:.3s}
-body.light{--bg:#f5f5f5;--text:#111}
-header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#111;position:sticky;top:0;z-index:100}
-body.light header{background:#fff;border-bottom:1px solid #ddd}
-.logo{color:var(--gold);font-weight:bold;font-size:20px}
-.lightBtn{background:none;border:1px solid var(--gold);color:var(--gold);padding:6px 12px;border-radius:20px;cursor:pointer}
-#tabs{display:flex;overflow-x:auto;gap:8px;padding:10px;background:#0a0a0a}
-body.light #tabs{background:#eee}
-.tab{padding:8px 16px;background:#222;border-radius:20px;white-space:nowrap;cursor:pointer;color:#eee}
-body.light.tab{background:#ddd;color:#111}
-.tab.active{background:var(--gold);color:#000}
-main{max-width:900px;margin:auto;padding:20px}
-.card{background:#111;padding:16px;margin:12px 0;border-radius:10px;border-right:4px solid var(--gold);cursor:pointer}
-body.light.card{background:#fff;border:1px solid #ddd}
-footer{text-align:center;padding:30px;color:#888;margin-top:40px}
-footer a{color:#888;margin:0 10px;text-decoration:none}
-</style>
-</head>
-<body>
-<header>
-  <div class="logo">ALSHANFRICC</div>
-  <button class="lightBtn" onclick="toggleLight()"><i class="fa-solid fa-sun"></i> إضاءة</button>
-</header>
-
-<div id="tabs"></div>
-<main><div id="content"></div></main>
-
-<footer>
-  <a href="about.html">من نحن</a>
-  <a href="privacy.html">الخصوصية</a>
-  <a href="cookies.html">الكوكيز</a>
-  <a href="admin.html">الأدمن</a>
-  <p>© 2026</p>
-</footer>
-
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ALSHANFRICC</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><style>:root{--gold:#D4AF37}body{margin:0;background:#000;color:#eee;font-family:'Tajawal',Tahoma;transition:.3s}body.light{background:#f5f5f5;color:#111}header{display:flex;justify-content:space-between;padding:12px 20px;background:#111;position:sticky;top:0}body.light header{background:#fff;border-bottom:1px solid #ddd}.logo{color:var(--gold);font-weight:bold}.lightBtn{background:none;border:1px solid var(--gold);color:var(--gold);padding:6px 12px;border-radius:20px;cursor:pointer}#tabs{display:flex;overflow-x:auto;gap:8px;padding:10px;background:#0a0a0a}.tab{padding:8px 16px;background:#222;border-radius:20px;white-space:nowrap;cursor:pointer}.tab.active{background:var(--gold);color:#000}main{max-width:900px;margin:auto;padding:20px}.card{background:#111;padding:16px;margin:12px 0;border-radius:10px;border-right:4px solid var(--gold);cursor:pointer}body.light.card{background:#fff;border:1px solid #ddd}footer{text-align:center;padding:30px;color:#888}footer a{color:#888;margin:0 10px;text-decoration:none}#copyright{cursor:pointer;color:#888}#copyright:hover{color:var(--gold)}</style></head><body>
+<header><div class="logo">ALSHANFRICC</div><button class="lightBtn" onclick="toggleLight()"><i class="fa-solid fa-sun"></i></button></header>
+<div id="tabs"></div><main><div id="content"></div></main>
+<footer><a href="about.html">من نحن</a><a href="privacy.html">الخصوصية</a><a href="cookies.html">الكوكيز</a><p id="copyright" onclick="openAdmin()">© 2026</p></footer>
 <script>
-function toggleLight(){
-  document.body.classList.toggle('light');
-  localStorage.setItem('lightMode', document.body.classList.contains('light'));
-}
-if(localStorage.getItem('lightMode')==='true') document.body.classList.add('light');
+// إضاءة
+function toggleLight(){document.body.classList.toggle('light');localStorage.light=document.body.classList.contains('light')}
+if(localStorage.light==='true')document.body.classList.add('light');
 
-// تبويبات
-const cats = JSON.parse(localStorage.getItem('cats') || '[{"name":"الرئيسية"},{"name":"علوم"},{"name":"تقنية"}]');
-const tabs = document.getElementById('tabs');
-tabs.innerHTML = cats.map((c,i)=>`<div class="tab" onclick="openTab(${i})">${c.name}</div>`).join('');
+// إعداد الأدمن الافتراضي
+if(!localStorage.adminEmail){localStorage.adminEmail='admin@alshanfricc.com';localStorage.adminPass='123456'}
+
+function openAdmin(){
+  const email = prompt('البريد الإلكتروني:');
+  const pass = prompt('كلمة السر:');
+  if(email===localStorage.adminEmail && pass===localStorage.adminPass){
+    sessionStorage.adminAuth='1';
+    location.href='admin.html';
+  }else{alert('بيانات خاطئة')}
+}
+
+// المجالات الأكثر بحثاً
+const popularCats = [
+  {name:'الرئيسية',subs:[]},
+  {name:'ذكاء اصطناعي',subs:['ChatGPT','أدوات','صور']},
+  {name:'عملات رقمية',subs:['بيتكوين','تداول','محافظ']},
+  {name:'وظائف',subs:['عن بعد','حكومية','شركات']},
+  {name:'تقنية',subs:['آيفون','أندرويد','تطبيقات']},
+  {name:'استثمار',subs:['أسهم سعودية','عقار','ذهب']},
+  {name:'صحة',subs:['تغذية','رياضة','نفسي']},
+  {name:'سيارات',subs:['كهربائية','مستعملة','صيانة']},
+  {name:'تعليم',subs:['دورات','لغات','جامعات']},
+  {name:'أخبار',subs:['السعودية','عالمية','اقتصاد']}
+];
+if(!localStorage.cats) localStorage.cats=JSON.stringify(popularCats);
+const cats=JSON.parse(localStorage.cats);
+document.getElementById('tabs').innerHTML=cats.map((c,i)=>`<div class="tab" onclick="openTab(${i})">${c.name}</div>`).join('');
 
 function openTab(i){
   document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('active',idx===i));
   loadArticles(cats[i].name);
 }
-
 function loadArticles(tag){
-  const arts = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
-  const filtered = tag==='الرئيسية'? arts : arts.filter(a=>a.tags===tag);
-  document.getElementById('content').innerHTML = filtered.map(a=>`
-    <div class="card" onclick="location='article.html?id=${a.id}'">
-      <h3 style="margin:0;color:var(--gold)">${a.title}</h3>
-      <p style="color:#aaa">${(a.content||'').substring(0,100)}...</p>
-    </div>
-  `).join('') || '<p style="text-align:center;color:#666">لا توجد مقالات - اذهب للأدمن</p>';
+  const arts=JSON.parse(localStorage.alshanfricc_articles||'[]');
+  const filtered=tag==='الرئيسية'?arts:arts.filter(a=>a.tags===tag);
+  document.getElementById('content').innerHTML=filtered.map(a=>`<div class="card" onclick="location='article.html?id=${a.id}'"><h3 style="margin:0;color:var(--gold)">${a.title}</h3><p style="color:#aaa">${(a.content||'').substring(0,100)}...</p></div>`).join('')||'<p style="text-align:center;color:#666">لا مقالات</p>';
 }
 openTab(0);
-
-// إنشاء مقالات تجريبية إذا فارغ
-if(!localStorage.getItem('alshanfricc_articles')){
-  localStorage.setItem('alshanfricc_articles', JSON.stringify([
-    {id:1,title:'مرحبا بك في ALSHANFRICC',content:'## البداية\nهذا أول مقال تجريبي\n## المميزات\nالموقع جاهز',tags:'الرئيسية',date:new Date().toISOString(),views:0}
-  ]));
-  loadArticles('الرئيسية');
+if(!localStorage.alshanfricc_articles){
+  localStorage.alshanfricc_articles=JSON.stringify([{id:1,title:'مرحبا بك',content:'## ابدأ\nاذهب للأدمن بالضغط على © 2026',tags:'الرئيسية',date:new Date().toISOString(),views:0}]);
 }
-</script>
-</body>
-</html>
+</script></body></html>
