@@ -2,40 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ALSHANFRICC | Information</title>
+    <title>ALSHANFRICC | Info</title>
     <style>
         body { background: #050505; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .box { width: 80%; max-width: 600px; border: 1px solid #D4AF37; padding: 40px; background: rgba(0,0,0,0.9); position: relative; }
-        .tabs { display: flex; gap: 20px; border-bottom: 1px solid #D4AF37; padding-bottom: 10px; margin-bottom: 20px; }
-        .tab { color: #888; cursor: pointer; font-size: 0.8em; letter-spacing: 2px; }
-        .tab.active { color: #D4AF37; font-weight: bold; }
-        .content { display: none; }
+        .box { width: 90%; max-width: 500px; border: 1px solid #D4AF37; padding: 40px; background: #000; position: relative; }
+        .tabs { display: flex; gap: 20px; border-bottom: 1px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
+        .tab { cursor: pointer; color: #666; font-size: 0.8em; letter-spacing: 2px; }
+        .tab.active { color: #D4AF37; font-weight: bold; border-bottom: 2px solid #D4AF37; }
+        .content { display: none; line-height: 1.6; }
         .content.active { display: block; }
-        .return { position: absolute; top: -15px; left: 15px; background: #050505; color: #D4AF37; border: 1px solid #D4AF37; padding: 2px 10px; text-decoration: none; font-size: 0.7em; }
+        .back-btn { position: absolute; top: -15px; left: 15px; background: #000; color: #D4AF37; border: 1px solid #D4AF37; padding: 2px 10px; text-decoration: none; font-size: 0.7em; }
     </style>
 </head>
 <body>
     <div class="box">
-        <a href="index.html" class="return">RETURN TO CORE</a>
+        <a href="index.html" class="back-btn">RETURN TO CORE</a>
         <div class="tabs">
-            <div class="tab active" onclick="show('about')">ABOUT</div>
-            <div class="tab" onclick="show('privacy')">PRIVACY</div>
+            <div class="tab active" onclick="openTab(event, 'about')">ABOUT</div>
+            <div class="tab" onclick="openTab(event, 'privacy')">PRIVACY</div>
         </div>
         <div id="about" class="content active">
-            <h1 style="color:#D4AF37;">Narrative Architect</h1>
-            <p>Manifesting the vision of Muaad Al-Shanfari.</p>
+            <h2 style="color:#D4AF37;">Narrative Architect</h2>
+            <p>Specializing in constructing high-impact symbolic identities.</p>
         </div>
         <div id="privacy" class="content">
-            <h1 style="color:#D4AF37;">Privacy Protocol</h1>
-            <p>System Integrity Secured under Silent Lock.</p>
+            <h2 style="color:#D4AF37;">Privacy Protocol</h2>
+            <p>Your digital footprint is protected under our sovereign encryption.</p>
         </div>
     </div>
     <script>
-        function show(id) {
+        function openTab(e, id) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            event.target.classList.add('active');
+            e.currentTarget.classList.add('active');
         }
     </script>
 </body>
