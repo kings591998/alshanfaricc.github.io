@@ -8,146 +8,130 @@
         :root { --gold: #D4AF37; --cyan: #00f2ff; }
         body { background: transparent; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; overflow: visible; }
 
-        /* الحاوية الرئيسية للهيدر */
-        .master-nav {
+        /* حاوية الهيدر: الاسم يسار والأيقونات يمين */
+        .nav-wrapper {
             display: flex;
-            flex-direction: row-reverse; /* الأيقونات يمين والاسم يسارها */
-            justify-content: flex-start; 
+            justify-content: space-between; 
             align-items: center;
-            padding: 20px;
+            padding: 15px 20px;
             width: 100%;
             box-sizing: border-box;
+            position: relative;
+        }
+
+        /* قسم الاسم (أقصى اليسار) */
+        .brand-box { text-align: left; order: 1; }
+        .logo-text { 
+            font-size: clamp(1.2em, 4vw, 2.2em); 
+            color: var(--gold); 
+            letter-spacing: 3px; 
+            font-weight: 900; 
+            margin: 0;
         }
 
         /* عمود الأيقونات (أقصى اليمين) */
-        .icon-system {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            z-index: 100; /* لضمان ظهور القوائم فوق أي شيء آخر */
+        .icon-system { 
+            display: flex; 
+            gap: 15px; 
+            order: 2; 
+            position: relative;
         }
 
-        /* قسم الاسم (بجانب الأيقونات من اليسار) */
-        .brand-identity {
-            margin-right: 25px; /* مسافة أمان لمنع التغطية */
-            text-align: right;
-            flex-grow: 1;
-        }
-        .main-title { 
-            font-size: clamp(1.4em, 5vw, 2.5em); 
-            color: var(--gold); 
-            letter-spacing: 4px; 
-            font-weight: 900; 
-            margin: 0;
-            white-space: nowrap;
-        }
-        .status-text { font-size: 8px; color: var(--gold); opacity: 0.5; letter-spacing: 2px; }
-
-        .node-group { position: relative; display: flex; align-items: center; }
+        .node-container { position: relative; }
 
         /* الأيقونة الدائرية */
-        .trigger-btn {
-            width: 48px; height: 48px;
-            border: 1px solid #333; border-radius: 50%;
-            background: #000; color: var(--gold);
+        .main-trigger {
+            width: 45px; height: 45px;
+            border: 1px solid rgba(212,175,55,0.3); border-radius: 50%;
+            background: rgba(0,0,0,0.9); color: var(--gold);
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: 0.3s;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            z-index: 100;
         }
 
-        .node-group:hover .trigger-btn {
+        .node-container:hover .main-trigger {
             border-color: var(--gold);
             box-shadow: 0 0 15px var(--gold);
+            transform: scale(1.1);
         }
 
-        /* القائمة التي تخرج لليسار */
-        .expandable-panel {
+        /* القائمة المنسدلة للأسفل (لتجنب تغطية الاسم) */
+        .drop-panel {
             position: absolute;
-            right: 55px; /* تبدأ من طرف الأيقونة */
-            height: 44px;
-            width: 0;
-            opacity: 0;
-            background: rgba(5,5,5,0.95);
+            top: 55px; /* تفتح تحت الأيقونة مباشرة */
+            right: 0;
+            width: 160px;
+            background: rgba(10,10,10,0.98);
             border: 1px solid var(--gold);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            padding: 0;
-            overflow: hidden;
-            transition: 0.4s ease-out;
-            white-space: nowrap;
-            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            display: none; /* تظهر عند Hover فقط */
+            flex-direction: column;
+            padding: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            z-index: 1000;
         }
 
-        .node-group:hover .expandable-panel {
-            width: 280px; /* عرض القائمة */
-            opacity: 1;
-            padding: 0 15px;
-            box-shadow: -10px 0 20px rgba(0,0,0,0.8);
-        }
+        .node-container:hover .drop-panel { display: flex; animation: fadeIn 0.3s ease; }
 
-        .link-branch {
+        .sub-link {
             color: var(--gold);
             text-decoration: none;
-            font-size: 10px;
-            font-weight: bold;
-            margin-left: 12px;
+            font-size: 11px;
+            padding: 10px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            border-bottom: 1px solid rgba(212,175,55,0.1);
+            transition: 0.3s;
         }
-        .link-branch:hover { color: #fff; }
+        .sub-link:last-child { border: none; }
+        .sub-link:hover { background: rgba(212,175,55,0.1); color: #fff; padding-right: 15px; }
 
-        /* البحث */
-        .search-inner {
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .search-bar {
             background: transparent; border: none; border-bottom: 1px solid var(--gold);
-            color: var(--gold); width: 100%; outline: none; font-size: 12px;
-        }
-
-        @media (max-width: 480px) {
-            .main-title { font-size: 1.2em; letter-spacing: 2px; }
-            .node-group:hover .expandable-panel { width: 220px; }
+            color: var(--gold); width: 100%; outline: none; font-size: 11px; padding: 5px 0;
         }
     </style>
 </head>
 <body>
 
-<div class="master-nav">
+<div class="nav-wrapper">
     
+    <div class="brand-box">
+        <h1 class="logo-text">ALSHANFRICC</h1>
+    </div>
+
     <div class="icon-system">
         
-        <div class="node-group">
-            <div class="expandable-panel">
-                <a href="#" class="link-branch"><i class="fas fa-pen-nib"></i> السرد</a>
-                <a href="#" class="link-branch"><i class="fas fa-chart-line"></i> الاستثمار</a>
-                <a href="#" class="link-branch"><i class="fas fa-robot"></i> الأتمتة</a>
+        <div class="node-container">
+            <div class="main-trigger"><i class="fas fa-sitemap"></i></div>
+            <div class="drop-panel">
+                <a href="#" class="sub-link"><i class="fas fa-pen-nib"></i> هندسة السرد</a>
+                <a href="#" class="sub-link"><i class="fas fa-chart-line"></i> عمارة الاستثمار</a>
+                <a href="#" class="sub-link"><i class="fas fa-robot"></i> الأنظمة الذكية</a>
+                <a href="#" class="sub-link"><i class="fas fa-database"></i> البيانات</a>
             </div>
-            <div class="trigger-btn"><i class="fas fa-sitemap"></i></div>
         </div>
 
-        <div class="node-group">
-            <div class="expandable-panel">
-                <a href="#" class="link-branch"><i class="fab fa-telegram"></i> Telegram</a>
-                <a href="#" class="link-branch"><i class="fab fa-linkedin"></i> LinkedIn</a>
-                <a href="#" class="link-branch"><i class="fab fa-x-twitter"></i> Twitter</a>
+        <div class="node-container">
+            <div class="main-trigger" style="color:var(--cyan);"><i class="fas fa-bolt"></i></div>
+            <div class="drop-panel">
+                <a href="#" class="sub-link"><i class="fab fa-telegram"></i> Telegram</a>
+                <a href="#" class="sub-link"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                <a href="#" class="sub-link"><i class="fab fa-x-twitter"></i> Twitter</a>
             </div>
-            <div class="trigger-btn" style="color:var(--cyan); border-color: rgba(0,242,255,0.3);"><i class="fas fa-bolt"></i></div>
         </div>
 
-        <div class="node-group">
-            <div class="expandable-panel">
-                <input type="text" class="search-inner" placeholder="ابحث في النواة...">
+        <div class="node-container">
+            <div class="main-trigger"><i class="fas fa-search"></i></div>
+            <div class="drop-panel">
+                <input type="text" class="search-bar" placeholder="ابحث هنا...">
             </div>
-            <div class="trigger-btn"><i class="fas fa-search"></i></div>
         </div>
 
     </div>
-
-    <div class="brand-identity">
-        <h1 class="main-title">ALSHANFRICC</h1>
-        <div class="status-text">SYSTEM ACTIVE | JUBAIL HUB</div>
-    </div>
-
 </div>
 
 </body>
