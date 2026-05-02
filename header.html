@@ -6,156 +6,148 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --gold: #D4AF37; --cyan: #00f2ff; }
-        body { background: transparent; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 500px; }
+        body { background: transparent; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; overflow: visible; }
 
         /* الحاوية الرئيسية للهيدر */
-        .nav-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
+        .master-nav {
             display: flex;
-            justify-content: flex-end; /* دفع كل شيء لليمين */
-            padding-right: 20px;
-            padding-top: 40px;
+            flex-direction: row-reverse; /* الأيقونات يمين والاسم يسارها */
+            justify-content: flex-start; 
+            align-items: center;
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        /* الاسم (محاذاة يمين بجانب الأيقونات) */
-        .brand-box {
-            margin-right: 20px; /* مسافة بينه وبين الأيقونات */
-            text-align: right;
-            margin-top: 5px;
-        }
-        .logo-text { 
-            font-size: clamp(1.8em, 5vw, 2.5em); 
-            color: var(--gold); 
-            letter-spacing: 5px; 
-            font-weight: 900; 
-            margin: 0; 
-            line-height: 1;
-        }
-        .tagline { font-size: 9px; color: var(--gold); opacity: 0.5; letter-spacing: 2px; }
-
-        /* عمود الأيقونات الثلاث (على الحافة اليمنى) */
-        .icon-column {
+        /* عمود الأيقونات (أقصى اليمين) */
+        .icon-system {
             display: flex;
             flex-direction: column;
-            gap: 25px;
-            align-items: center;
+            gap: 20px;
+            z-index: 100; /* لضمان ظهور القوائم فوق أي شيء آخر */
         }
 
-        .node-item { position: relative; display: flex; align-items: center; }
+        /* قسم الاسم (بجانب الأيقونات من اليسار) */
+        .brand-identity {
+            margin-right: 25px; /* مسافة أمان لمنع التغطية */
+            text-align: right;
+            flex-grow: 1;
+        }
+        .main-title { 
+            font-size: clamp(1.4em, 5vw, 2.5em); 
+            color: var(--gold); 
+            letter-spacing: 4px; 
+            font-weight: 900; 
+            margin: 0;
+            white-space: nowrap;
+        }
+        .status-text { font-size: 8px; color: var(--gold); opacity: 0.5; letter-spacing: 2px; }
 
-        /* الدائرة الأم */
-        .circle-trigger {
-            width: 55px; height: 55px;
-            border: 2px solid #222; border-radius: 50%;
+        .node-group { position: relative; display: flex; align-items: center; }
+
+        /* الأيقونة الدائرية */
+        .trigger-btn {
+            width: 48px; height: 48px;
+            border: 1px solid #333; border-radius: 50%;
             background: #000; color: var(--gold);
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.4s; z-index: 10;
+            cursor: pointer; transition: 0.3s;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
-        .node-item:hover .circle-trigger {
+        .node-group:hover .trigger-btn {
             border-color: var(--gold);
-            box-shadow: 0 0 15px var(--gold), inset 0 0 10px var(--gold);
-            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--gold);
         }
 
-        /* المستطيل الطافي (يظهر بجانب الأيقونة لليسار) */
-        .floating-panel {
+        /* القائمة التي تخرج لليسار */
+        .expandable-panel {
             position: absolute;
-            right: 70px; /* يبدأ بعد الأيقونة مباشرة دون تغطيتها */
-            height: 50px;
+            right: 55px; /* تبدأ من طرف الأيقونة */
+            height: 44px;
             width: 0;
             opacity: 0;
-            background: rgba(15,15,15,0.9);
+            background: rgba(5,5,5,0.95);
             border: 1px solid var(--gold);
-            border-radius: 12px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             padding: 0;
             overflow: hidden;
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: 0.4s ease-out;
             white-space: nowrap;
-            backdrop-filter: blur(8px);
-            z-index: 5;
+            backdrop-filter: blur(10px);
         }
 
-        /* عند المرور فوق الأيقونة */
-        .node-item:hover .floating-panel {
-            width: 350px; /* عرض كافٍ للفروع */
+        .node-group:hover .expandable-panel {
+            width: 280px; /* عرض القائمة */
             opacity: 1;
-            padding: 0 20px;
+            padding: 0 15px;
+            box-shadow: -10px 0 20px rgba(0,0,0,0.8);
         }
 
-        /* أيقونات الفروع والروابط */
-        .branch-link {
+        .link-branch {
             color: var(--gold);
             text-decoration: none;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
-            margin-left: 15px;
+            margin-left: 12px;
             display: flex;
             align-items: center;
-            gap: 6px;
-            transition: 0.3s;
+            gap: 5px;
         }
-        .branch-link:hover { color: #fff; text-shadow: 0 0 10px var(--gold); }
+        .link-branch:hover { color: #fff; }
 
-        /* شريط التيار الكهربائي أسفل المستطيل */
-        .power-bar {
-            position: absolute; bottom: 0; left: 0;
-            height: 2px; width: 0; background: var(--gold);
-            box-shadow: 0 0 10px var(--gold);
-            transition: 0.7s;
-        }
-        .node-item:hover .power-bar { width: 100%; }
-
-        .search-field {
+        /* البحث */
+        .search-inner {
             background: transparent; border: none; border-bottom: 1px solid var(--gold);
-            color: var(--gold); width: 100%; outline: none; font-size: 13px;
+            color: var(--gold); width: 100%; outline: none; font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .main-title { font-size: 1.2em; letter-spacing: 2px; }
+            .node-group:hover .expandable-panel { width: 220px; }
         }
     </style>
 </head>
 <body>
 
-<div class="nav-container">
+<div class="master-nav">
     
-    <div class="brand-box">
-        <h1 class="logo-text">ALSHANFRICC</h1>
-        <div class="tagline">NARRATIVE ARCHITECT | CORE SYSTEM</div>
-    </div>
-
-    <div class="icon-column">
+    <div class="icon-system">
         
-        <div class="node-item">
-            <div class="floating-panel">
-                <a href="#" class="branch-link"><i class="fas fa-pen-nib"></i> هندسة السرد</a>
-                <a href="#" class="branch-link"><i class="fas fa-chart-line"></i> الاستثمار</a>
-                <a href="#" class="branch-link"><i class="fas fa-robot"></i> الأتمتة</a>
-                <div class="power-bar"></div>
+        <div class="node-group">
+            <div class="expandable-panel">
+                <a href="#" class="link-branch"><i class="fas fa-pen-nib"></i> السرد</a>
+                <a href="#" class="link-branch"><i class="fas fa-chart-line"></i> الاستثمار</a>
+                <a href="#" class="link-branch"><i class="fas fa-robot"></i> الأتمتة</a>
             </div>
-            <div class="circle-trigger"><i class="fas fa-sitemap"></i></div>
+            <div class="trigger-btn"><i class="fas fa-sitemap"></i></div>
         </div>
 
-        <div class="node-item">
-            <div class="floating-panel">
-                <a href="#" class="branch-link"><i class="fab fa-telegram-plane"></i> Telegram</a>
-                <a href="#" class="branch-link"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
-                <a href="#" class="branch-link"><i class="fab fa-x-twitter"></i> Twitter</a>
-                <div class="power-bar" style="background: var(--cyan); box-shadow: 0 0 10px var(--cyan);"></div>
+        <div class="node-group">
+            <div class="expandable-panel">
+                <a href="#" class="link-branch"><i class="fab fa-telegram"></i> Telegram</a>
+                <a href="#" class="link-branch"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                <a href="#" class="link-branch"><i class="fab fa-x-twitter"></i> Twitter</a>
             </div>
-            <div class="circle-trigger" style="color:var(--cyan);"><i class="fas fa-bolt"></i></div>
+            <div class="trigger-btn" style="color:var(--cyan); border-color: rgba(0,242,255,0.3);"><i class="fas fa-bolt"></i></div>
         </div>
 
-        <div class="node-item">
-            <div class="floating-panel">
-                <input type="text" class="search-field" placeholder="ابحث في السجلات...">
-                <div class="power-bar"></div>
+        <div class="node-group">
+            <div class="expandable-panel">
+                <input type="text" class="search-inner" placeholder="ابحث في النواة...">
             </div>
-            <div class="circle-trigger"><i class="fas fa-search"></i></div>
+            <div class="trigger-btn"><i class="fas fa-search"></i></div>
         </div>
 
     </div>
+
+    <div class="brand-identity">
+        <h1 class="main-title">ALSHANFRICC</h1>
+        <div class="status-text">SYSTEM ACTIVE | JUBAIL HUB</div>
+    </div>
+
 </div>
 
 </body>
