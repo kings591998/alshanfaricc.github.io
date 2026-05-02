@@ -2,132 +2,127 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --gold: #D4AF37; --cyan: #00f2ff; }
-        body { background: transparent; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; overflow: visible; }
+        body { background: transparent; margin: 0; padding: 10px 20px; font-family: sans-serif; overflow: visible; }
 
-        /* حاوية الهيدر: الاسم يسار والأيقونات يمين */
-        .nav-wrapper {
+        .nav-master {
             display: flex;
-            justify-content: space-between; 
+            justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
             width: 100%;
-            box-sizing: border-box;
-            position: relative;
         }
 
-        /* قسم الاسم (أقصى اليسار) */
-        .brand-box { text-align: left; order: 1; }
-        .logo-text { 
-            font-size: clamp(1.2em, 4vw, 2.2em); 
+        /* الاسم بحجم أصغر لتجنب التداخل */
+        .brand-small { text-align: left; }
+        .brand-small h1 { 
+            font-size: 1.2rem; 
             color: var(--gold); 
-            letter-spacing: 3px; 
-            font-weight: 900; 
-            margin: 0;
+            letter-spacing: 2px; 
+            margin: 0; 
+            font-weight: 900;
         }
 
-        /* عمود الأيقونات (أقصى اليمين) */
-        .icon-system { 
-            display: flex; 
-            gap: 15px; 
-            order: 2; 
-            position: relative;
+        /* حاوية الأيقونات أفقية مرتبة */
+        .controls-tray {
+            display: flex;
+            gap: 12px;
         }
 
-        .node-container { position: relative; }
+        .action-node { position: relative; }
 
-        /* الأيقونة الدائرية */
-        .main-trigger {
-            width: 45px; height: 45px;
-            border: 1px solid rgba(212,175,55,0.3); border-radius: 50%;
-            background: rgba(0,0,0,0.9); color: var(--gold);
+        .btn-circle {
+            width: 40px; height: 40px;
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 50%;
+            background: rgba(0,0,0,0.8);
+            color: var(--gold);
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: 0.3s;
-            z-index: 100;
+            font-size: 0.9rem;
         }
 
-        .node-container:hover .main-trigger {
-            border-color: var(--gold);
-            box-shadow: 0 0 15px var(--gold);
+        .btn-circle:hover { 
+            border-color: var(--gold); 
+            box-shadow: 0 0 10px var(--gold);
             transform: scale(1.1);
         }
 
-        /* القائمة المنسدلة للأسفل (لتجنب تغطية الاسم) */
-        .drop-panel {
+        /* القوائم المنسدلة */
+        .mega-menu {
             position: absolute;
-            top: 55px; /* تفتح تحت الأيقونة مباشرة */
-            right: 0;
-            width: 160px;
-            background: rgba(10,10,10,0.98);
+            top: 50px; left: 0;
+            width: 150px;
+            background: rgba(10,10,10,0.95);
             border: 1px solid var(--gold);
-            border-radius: 12px;
-            display: none; /* تظهر عند Hover فقط */
+            border-radius: 8px;
+            display: none;
             flex-direction: column;
-            padding: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            z-index: 1000;
+            padding: 5px;
+            z-index: 2000;
         }
 
-        .node-container:hover .drop-panel { display: flex; animation: fadeIn 0.3s ease; }
+        .action-node:hover .mega-menu { display: flex; animation: slideIn 0.3s ease; }
 
-        .sub-link {
+        .menu-link {
             color: var(--gold);
             text-decoration: none;
-            font-size: 11px;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-bottom: 1px solid rgba(212,175,55,0.1);
-            transition: 0.3s;
+            font-size: 10px;
+            padding: 8px;
+            border-bottom: 1px solid rgba(212,175,55,0.05);
         }
-        .sub-link:last-child { border: none; }
-        .sub-link:hover { background: rgba(212,175,55,0.1); color: #fff; padding-right: 15px; }
+        .menu-link:hover { background: rgba(212,175,55,0.1); color: #fff; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .search-bar {
+        .search-input {
             background: transparent; border: none; border-bottom: 1px solid var(--gold);
-            color: var(--gold); width: 100%; outline: none; font-size: 11px; padding: 5px 0;
+            color: var(--gold); width: 100%; outline: none; font-size: 10px;
         }
     </style>
 </head>
 <body>
 
-<div class="nav-wrapper">
+<div class="nav-master">
     
-    <div class="brand-box">
-        <h1 class="logo-text">ALSHANFRICC</h1>
+    <div class="brand-small">
+        <h1>ALSHANFRICC</h1>
     </div>
 
-    <div class="icon-system">
+    <div class="controls-tray">
         
-        <div class="node-container">
-            <div class="main-trigger"><i class="fas fa-sitemap"></i></div>
-            <div class="drop-panel">
-                <a href="#" class="sub-link"><i class="fas fa-pen-nib"></i> هندسة السرد</a>
-                <a href="#" class="sub-link"><i class="fas fa-chart-line"></i> عمارة الاستثمار</a>
-                <a href="#" class="sub-link"><i class="fas fa-robot"></i> الأنظمة الذكية</a>
-                <a href="#" class="sub-link"><i class="fas fa-database"></i> البيانات</a>
+        <div class="action-node">
+            <div class="btn-circle" onclick="window.history.back()"><i class="fas fa-chevron-right"></i></div>
+        </div>
+
+        <div class="action-node">
+            <div class="btn-circle" onclick="parent.document.body.classList.toggle('light-mode')">
+                <i class="fas fa-lightbulb"></i>
             </div>
         </div>
 
-        <div class="node-container">
-            <div class="main-trigger" style="color:var(--cyan);"><i class="fas fa-bolt"></i></div>
-            <div class="drop-panel">
-                <a href="#" class="sub-link"><i class="fab fa-telegram"></i> Telegram</a>
-                <a href="#" class="sub-link"><i class="fab fa-linkedin"></i> LinkedIn</a>
-                <a href="#" class="sub-link"><i class="fab fa-x-twitter"></i> Twitter</a>
+        <div class="action-node">
+            <div class="btn-circle"><i class="fas fa-sitemap"></i></div>
+            <div class="mega-menu">
+                <a href="#" class="menu-link">هندسة السرد</a>
+                <a href="#" class="menu-link">الاستثمار</a>
+                <a href="#" class="menu-link">الأتمتة</a>
             </div>
         </div>
 
-        <div class="node-container">
-            <div class="main-trigger"><i class="fas fa-search"></i></div>
-            <div class="drop-panel">
-                <input type="text" class="search-bar" placeholder="ابحث هنا...">
+        <div class="action-node">
+            <div class="btn-circle" style="color:var(--cyan);"><i class="fas fa-bolt"></i></div>
+            <div class="mega-menu">
+                <a href="#" class="menu-link">Telegram</a>
+                <a href="#" class="menu-link">X-Twitter</a>
+            </div>
+        </div>
+
+        <div class="action-node">
+            <div class="btn-circle"><i class="fas fa-search"></i></div>
+            <div class="mega-menu" style="width: 200px;">
+                <input type="text" class="search-input" placeholder="ابحث في النواة...">
             </div>
         </div>
 
