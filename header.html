@@ -1,98 +1,157 @@
-</html<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --gold: #D4AF37; --silver: #C0C0C0; }
-        body { background: transparent; margin: 0; font-family: sans-serif; overflow: visible; display: flex; flex-direction: column; align-items: center; }
+        :root { --gold: #D4AF37; --bg: #050505; }
+        body { background: transparent; margin: 0; font-family: 'Segoe UI', sans-serif; color: var(--gold); overflow: visible; }
 
-        /* شريط الحالة العلوي */
-        .status { width: 100%; display: flex; justify-content: space-between; padding: 10px 20px; font-size: 9px; color: var(--gold); opacity: 0.6; box-sizing: border-box; border-bottom: 1px solid rgba(212,175,55,0.1); }
+        /* حاوية الهيدر كاملة */
+        .header-wrapper {
+            display: flex;
+            justify-content: flex-end; /* دفع العناصر لليمين */
+            align-items: flex-start;
+            padding: 20px 40px;
+            position: relative;
+        }
 
-        .header-content { padding: 40px 0; text-align: center; width: 100%; }
-        .logo { font-size: 2.5em; letter-spacing: 10px; color: var(--gold); margin-bottom: 50px; font-weight: 900; }
+        /* قسم الاسم (يسار الأيقونات) */
+        .brand-section {
+            position: absolute;
+            right: 140px; /* المسافة بين الاسم والأيقونات */
+            top: 50px;
+            text-align: right;
+        }
+        .logo { font-size: 2.8em; letter-spacing: 8px; font-weight: 900; margin: 0; }
+        .subtitle { font-size: 10px; opacity: 0.5; letter-spacing: 3px; }
 
-        /* حاوية الأنظمة الثلاثة */
-        .systems-wrapper { display: flex; flex-direction: column; gap: 40px; align-items: center; width: 100%; }
+        /* حاوية الأيقونات الثلاث (على اليمين تماماً) */
+        .side-dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            align-items: center;
+        }
 
-        .system-node { position: relative; display: flex; align-items: center; width: 300px; justify-content: center; }
+        .system-node {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        /* الأيقونة الدائرية */
+        /* الأيقونة الدائرية الأم */
         .core-icon {
-            width: 60px; height: 60px; border: 2px solid #333; border-radius: 50%;
+            width: 55px; height: 55px;
+            border: 2px solid #222; border-radius: 50%;
+            background: #000; color: var(--gold);
             display: flex; align-items: center; justify-content: center;
-            background: #000; color: var(--gold); cursor: pointer;
-            z-index: 10; transition: 0.4s; position: relative;
-        }
-        
-        /* توهج الحافة (الكهرباء) */
-        .system-node:hover .core-icon { 
-            border-color: var(--gold); 
-            box-shadow: 0 0 15px var(--gold), inset 0 0 10px var(--gold);
+            cursor: pointer; z-index: 100;
+            transition: 0.4s;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
-        /* المستطيل المنحني والخط الكهربائي */
-        .panel {
-            position: absolute; right: 60px;
-            height: 50px; width: 0; opacity: 0;
-            background: rgba(10,10,10,0.95);
-            border: 1px solid var(--gold);
-            border-radius: 10px;
-            display: flex; align-items: center; gap: 15px;
+        .system-node:hover .core-icon {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px var(--gold);
+            transform: scale(1.1);
+        }
+
+        /* شريط الأدوات (يخرج لليسار محاذياً للأيقونة) */
+        .tool-bar {
+            position: absolute;
+            right: 70px; /* يبدأ من جانب الأيقونة ولا يغطيها */
+            height: 45px;
+            width: 0;
+            opacity: 0;
+            background: rgba(15,15,15,0.95);
+            border-radius: 25px;
+            border: 1px solid rgba(212,175,55,0.3);
+            display: flex;
+            align-items: center;
+            padding: 0;
+            overflow: hidden;
             transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 0; overflow: hidden;
-            box-shadow: -5px 0 15px rgba(212,175,55,0.2);
+            white-space: nowrap;
+            backdrop-filter: blur(10px);
         }
 
-        /* سريان التيار */
-        .system-node:hover .panel { width: 220px; opacity: 1; padding: 0 15px; right: 80px; }
+        /* عند المرور: يفتح الشريط بالكامل */
+        .system-node:hover .tool-bar {
+            width: 380px; /* عرض كافٍ للفروع */
+            opacity: 1;
+            padding: 0 20px;
+            border-color: var(--gold);
+            box-shadow: -10px 0 20px rgba(0,0,0,0.5);
+        }
 
-        /* أيقونات التواصل والتبويبات داخل المستطيلات */
-        .item { color: var(--gold); text-decoration: none; font-size: 14px; white-space: nowrap; transition: 0.3s; }
-        .item:hover { color: #fff; text-shadow: 0 0 8px #fff; transform: scale(1.1); }
-        
-        .social-icons { display: flex; gap: 12px; }
-        .social-icons i { font-size: 18px; }
+        /* أيقونات الفروع والروابط */
+        .branch-item {
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: bold;
+            margin: 0 10px;
+            opacity: 0;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
+        .system-node:hover .branch-item { opacity: 1; }
+        .branch-item:hover { color: #fff; text-shadow: 0 0 10px var(--gold); }
+
+        /* تأثير "التيار الكهربائي" عند الفتح */
+        .tool-bar::before {
+            content: ''; position: absolute; left: 0; bottom: 0;
+            height: 1px; width: 0; background: var(--gold);
+            transition: 0.8s;
+        }
+        .system-node:hover .tool-bar::before { width: 100%; }
+
+        /* أيقونة البحث */
+        .search-input {
+            background: transparent; border: none; border-bottom: 1px solid var(--gold);
+            color: var(--gold); width: 100%; outline: none; font-size: 12px;
+        }
     </style>
 </head>
 <body>
 
-<div class="status">
-    <div id="time">JUBAIL: --:--:--</div>
-    <div>27.0117° N, 49.6583° E</div>
-</div>
+<div class="header-wrapper">
+    
+    <div class="brand-section">
+        <h1 class="logo">ALSHANFRICC</h1>
+        <div class="subtitle">NARRATIVE ENGINEERING & INVESTMENT ARCHITECTURE</div>
+    </div>
 
-<div class="header-content">
-    <div class="logo">ALSHANFRICC</div>
-
-    <div class="systems-wrapper">
+    <div class="side-dashboard">
         
         <div class="system-node">
-            <div class="panel">
-                <a href="#" class="item">هندسة السرد</a>
-                <a href="#" class="item">الاستثمار</a>
-                <a href="#" class="item">الأتمتة</a>
+            <div class="tool-bar">
+                <a href="#" class="branch-item"><i class="fas fa-pen-nib"></i> هندسة السرد</a>
+                <a href="#" class="branch-item"><i class="fas fa-chart-line"></i> عمارة الاستثمار</a>
+                <a href="#" class="branch-item"><i class="fas fa-robot"></i> الأنظمة الذكية</a>
+                <a href="#" class="branch-item"><i class="fas fa-database"></i> البيانات</a>
             </div>
             <div class="core-icon"><i class="fas fa-sitemap"></i></div>
         </div>
 
         <div class="system-node">
-            <div class="panel">
-                <div class="social-icons">
-                    <a href="#" class="item"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="item"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="item"><i class="fab fa-telegram-plane"></i></a>
-                    <a href="#" class="item"><i class="fab fa-x-twitter"></i></a>
-                </div>
+            <div class="tool-bar">
+                <a href="#" class="branch-item"><i class="fab fa-facebook-f"></i> Facebook</a>
+                <a href="#" class="branch-item"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+                <a href="#" class="branch-item"><i class="fab fa-telegram-plane"></i> Telegram</a>
+                <a href="#" class="branch-item"><i class="fab fa-x-twitter"></i> Twitter</a>
             </div>
-            <div class="core-icon"><i class="fas fa-bolt"></i></div>
+            <div class="core-icon" style="color: #00f2ff; border-color: #00f2ff;"><i class="fas fa-bolt"></i></div>
         </div>
 
         <div class="system-node">
-            <div class="panel">
-                <input type="text" placeholder="ابحث هنا..." style="background:transparent; border:none; border-bottom:1px solid var(--gold); color:var(--gold); width:100%; outline:none; font-size:12px;">
+            <div class="tool-bar">
+                <input type="text" class="search-input" placeholder="اسأل النواة السيادية...">
             </div>
             <div class="core-icon"><i class="fas fa-search"></i></div>
         </div>
@@ -100,12 +159,5 @@
     </div>
 </div>
 
-<script>
-    function updateClock() {
-        const opt = { timeZone: 'Asia/Riyadh', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-        document.getElementById('time').innerText = `JUBAIL: ${new Intl.DateTimeFormat('en-GB', opt).format(new Date())}`;
-    }
-    setInterval(updateClock, 1000);
-</script>
 </body>
 </html>
