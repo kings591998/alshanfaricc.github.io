@@ -2,40 +2,106 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ALSHANFRICC | Info</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALSHANFRICC | Information Vault</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #050505; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .box { width: 90%; max-width: 500px; border: 1px solid #D4AF37; padding: 40px; background: #000; position: relative; }
-        .tabs { display: flex; gap: 20px; border-bottom: 1px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
-        .tab { cursor: pointer; color: #666; font-size: 0.8em; letter-spacing: 2px; }
-        .tab.active { color: #D4AF37; font-weight: bold; border-bottom: 2px solid #D4AF37; }
-        .content { display: none; line-height: 1.6; }
-        .content.active { display: block; }
-        .back-btn { position: absolute; top: -15px; left: 15px; background: #000; color: #D4AF37; border: 1px solid #D4AF37; padding: 2px 10px; text-decoration: none; font-size: 0.7em; }
+        :root { --gold: #D4AF37; --black: #050505; --silver: #E5E4E2; }
+        body { background: var(--black); color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow: hidden; }
+        
+        .vault-container { width: 90%; max-width: 700px; background: rgba(10,10,10,0.98); border: 1px solid var(--gold); padding: 50px; position: relative; box-shadow: 0 0 40px rgba(212,175,55,0.15); animation: fadeIn 1s ease-out; }
+        
+        .nav-tabs { display: flex; justify-content: space-around; border-bottom: 1px solid #222; margin-bottom: 30px; padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .tab-link { color: #666; cursor: pointer; font-size: 0.65em; letter-spacing: 2px; font-weight: bold; transition: 0.4s; position: relative; text-decoration: none; }
+        .tab-link.active { color: var(--gold); }
+        .tab-link.active::after { content: ''; position: absolute; bottom: -16px; left: 0; width: 100%; height: 2px; background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+
+        .content-section { display: none; animation: slideUp 0.6s ease-out; line-height: 1.8; }
+        .content-section.active { display: block; }
+        
+        h2 { color: var(--gold); font-size: 1.3em; letter-spacing: 3px; margin-bottom: 20px; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 15px; }
+        p { font-size: 0.85em; color: #ccc; }
+        
+        /* تصميم بوابة المستثمر */
+        .investor-lock { text-align: center; padding: 40px 0; }
+        .lock-icon { font-size: 3em; color: var(--gold); margin-bottom: 20px; animation: pulse 2s infinite; }
+        input[type="password"] { background: transparent; border: 1px solid #333; color: var(--gold); padding: 10px; width: 200px; text-align: center; letter-spacing: 5px; outline: none; transition: 0.3s; }
+        input[type="password"]:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+        .access-btn { background: var(--gold); color: #000; border: none; padding: 10px 25px; cursor: pointer; font-weight: bold; margin-top: 20px; font-size: 0.7em; letter-spacing: 2px; }
+
+        .back-home { position: absolute; top: -15px; left: 20px; background: var(--black); color: var(--gold); border: 1px solid var(--gold); padding: 5px 15px; text-decoration: none; font-size: 0.6em; letter-spacing: 2px; transition: 0.3s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
     </style>
 </head>
 <body>
-    <div class="box">
-        <a href="index.html" class="back-btn">RETURN TO CORE</a>
-        <div class="tabs">
-            <div class="tab active" onclick="openTab(event, 'about')">ABOUT</div>
-            <div class="tab" onclick="openTab(event, 'privacy')">PRIVACY</div>
+
+    <div class="vault-container">
+        <a href="index.html" class="back-home"><i class="fas fa-chevron-left"></i> CORE SYSTEM</a>
+        
+        <div class="nav-tabs">
+            <div class="tab-link active" onclick="switchPage(event, 'about')">01. ABOUT</div>
+            <div class="tab-link" onclick="switchPage(event, 'services')">02. SERVICES</div>
+            <div class="tab-link" onclick="switchPage(event, 'privacy')">03. PRIVACY</div>
+            <div class="tab-link" onclick="switchPage(event, 'investor')" style="color:var(--silver);">04. INVESTOR GATE</div>
         </div>
-        <div id="about" class="content active">
-            <h2 style="color:#D4AF37;">Narrative Architect</h2>
-            <p>Specializing in constructing high-impact symbolic identities.</p>
+
+        <div id="about" class="content-section active">
+            <h2>The Narrative Architect</h2>
+            <p><strong>ALSHANFRICC</strong> embodies the strategic fusion of symbolic content and global investment architecture. Every digital structure we build is a testament to sovereignty and mystery.</p>
         </div>
-        <div id="privacy" class="content">
-            <h2 style="color:#D4AF37;">Privacy Protocol</h2>
-            <p>Your digital footprint is protected under our sovereign encryption.</p>
+
+        <div id="services" class="content-section">
+            <h2>Sovereign Services</h2>
+            <p><strong>- Symbolic Content:</strong> High-impact narrative engineering.</p>
+            <p><strong>- Investment Architecture:</strong> B2B intelligence and commercial database structuring.</p>
+            <p><strong>- Automation Mastery:</strong> Custom bot development and Python-driven lead generation.</p>
+        </div>
+
+        <div id="privacy" class="content-section">
+            <h2>Privacy Protocol</h2>
+            <p>Strict adherence to the "Silent Lock" security framework. Data integrity is maintained through localized encryption and sovereign management.</p>
+        </div>
+
+        <div id="investor" class="content-section">
+            <div class="investor-lock" id="lock-screen">
+                <i class="fas fa-fingerprint lock-icon"></i>
+                <h2>Restricted Access</h2>
+                <p>Enter the sovereign passphrase to access the Stone City's investments.</p>
+                <input type="password" id="pass-field" placeholder="••••••">
+                <br>
+                <button class="access-btn" onclick="checkAccess()">AUTHORIZE</button>
+            </div>
+            <div id="investor-content" style="display:none;">
+                <h2>Investor Portfolio</h2>
+                <p>Welcome, Partner. Accessing Project Muaad 1 databases and global factory leads.</p>
+                <div style="border: 1px solid #333; padding: 15px; margin-top: 15px; font-size: 0.75em;">
+                    <span style="color:var(--gold);">STATUS:</span> ACTIVE<br>
+                    <span style="color:var(--gold);">PROJECT:</span> وصية المدينة الحجرية
+                </div>
+            </div>
         </div>
     </div>
+
     <script>
-        function openTab(e, id) {
-            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            e.currentTarget.classList.add('active');
+        function switchPage(event, sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function checkAccess() {
+            const pass = document.getElementById('pass-field').value;
+            // كلمة المرور هي اسمك (MUAAD) كما حددت في تفضيلاتك
+            if(pass.toUpperCase() === "MUAAD") { 
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('investor-content').style.display = 'block';
+            } else {
+                alert("ACCESS DENIED: Unauthorized Identity.");
+            }
         }
     </script>
 </body>
