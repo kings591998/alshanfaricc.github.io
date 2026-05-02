@@ -8,8 +8,15 @@
 :root{--bg:#050505;--gold:#D4AF37;--cyan:#00f2ff}
 html,body{margin:0;height:100%;background:var(--bg);color:#eee;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma;overflow:hidden}
 #neural{position:fixed;inset:0;z-index:0}
-#headerFrame{position:fixed;top:0;left:0;width:100%;height:72px;border:0;z-index:1000;overflow:visible;background:transparent}
-#contentFrame{position:absolute;top:72px;left:0;width:100%;height:calc(100% - 72px);border:0;z-index:5;background:transparent;transition:filter .4s}
+#headerFrame{
+  position:fixed;top:0;left:0;width:100%;height:320px;
+  border:0;z-index:1000;background:transparent;
+  pointer-events:none;overflow:visible
+}
+#contentFrame{
+  position:absolute;top:72px;left:0;width:100%;height:calc(100% - 72px);
+  border:0;z-index:5;background:transparent;transition:filter.4s
+}
 body.light #neural{filter:invert(1) hue-rotate(180deg) brightness(.95)}
 body.light #contentFrame{filter:invert(1) hue-rotate(180deg)}
 </style>
@@ -17,21 +24,26 @@ body.light #contentFrame{filter:invert(1) hue-rotate(180deg)}
 <body>
 <canvas id="neural"></canvas>
 <iframe id="headerFrame" src="header.html" scrolling="no" allowtransparency="true"></iframe>
-<iframe id="contentFrame" srcdoc="<div style='padding:60px 20px;text-align:center;color:#D4AF37;font-family:tahoma'><h1 style='font-weight:300;letter-spacing:3px'>النواة السيادية</h1><p style='color:#00f2ff'>هندسة السرد • عمارة الاستثمار • الأنظمة الذكية</p></div>"></iframe>
+<iframe id="contentFrame" srcdoc="<div style='padding:70px 20px;text-align:center;color:#D4AF37;font-family:tahoma'><h1 style='font-weight:300;letter-spacing:3px;margin:0 0 12px'>النواة السيادية</h1><p style='color:#00f2ff;margin:0'>هندسة السرد • عمارة الاستثمار • الأنظمة الذكية</p></div>"></iframe>
 
 <script>
-// الشبكة العصبية
+// شبكة عصبية ذهبية/سياني
 const c=document.getElementById('neural'),x=c.getContext('2d');let w,h,pts=[];
-function rs(){w=c.width=innerWidth;h=c.height=innerHeight;pts=Array.from({length:80},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5}))}
-rs();addEventListener('resize',rs);
-function draw(){x.clearRect(0,0,w,h);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,1.5,0,7);x.fillStyle='#D4AF37';x.fill()});pts.forEach((a,i)=>pts.slice(i+1).forEach(b=>{const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<120){x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.strokeStyle=`rgba(0,242,255,${1-d/120})`;x.lineWidth=.4;x.stroke()}}));requestAnimationFrame(draw)}draw();
+function rs(){w=c.width=innerWidth;h=c.height=innerHeight;pts=Array.from({length:90},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6}))}
+addEventListener('resize',rs);rs();
+function draw(){
+  x.clearRect(0,0,w,h);
+  pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,1.6,0,7);x.fillStyle='#D4AF37';x.fill()});
+  for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<130){x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.strokeStyle=`rgba(0,242,255,${1-d/130})`;x.lineWidth=.45;x.stroke()}}}
+  requestAnimationFrame(draw)
+}draw();
 
-// إدارة الإطارات والإضاءة
-const hf=document.getElementById('headerFrame'),cf=document.getElementById('contentFrame');
+// استقبال أوامر من الهيدر
 window.addEventListener('message',e=>{
-  if(e.data.type==='resizeHeader'){hf.style.height=e.data.h+'px';cf.style.top=e.data.h+'px';cf.style.height=`calc(100% - ${e.data.h}px)`}
   if(e.data.type==='theme'){document.body.classList.toggle('light',e.data.mode==='light')}
-  if(e.data.type==='navigate'){cf.srcdoc=`<div style='padding:40px;color:#D4AF37;font-family:tahoma'><h2>${e.data.page}</h2><p style='color:#00f2ff'>محتوى ${e.data.page} يظهر هنا...</p></div>`}
+  if(e.data.type==='navigate'){
+    document.getElementById('contentFrame').srcdoc = `<div style="padding:40px;color:#D4AF37;font-family:tahoma"><h2 style="font-weight:400">${e.data.page}</h2><p style="color:#00f2ff">محتوى ${e.data.page} يظهر هنا...</p></div>`;
+  }
 });
 </script>
 </body>
