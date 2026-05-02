@@ -4,221 +4,81 @@
     <meta charset="UTF-8">
     <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALSHANFRICC | Architecture</title>
+    <title>ALSHANFRICC | Information</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --gold: #D4AF37;
-            --black: #050505;
-            --glass: rgba(212, 175, 55, 0.05);
-        }
-
-        * { box-sizing: border-box; }
-        body { 
-            background: var(--black); 
-            color: #fff; 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; 
-            overflow: hidden; /* لمنع التمرير خارج الحاوية */
-            direction: ltr; 
-        }
-
-        /* خلفية الخلايا العصبية */
-        #neural-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            z-index: -1;
-            width: 100%; height: 100%;
-            opacity: 0.6;
-        }
-
-        /* الحاوية الرئيسية */
-        .main-shield {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .content-box {
-            width: 100%;
-            max-width: 900px;
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid var(--gold);
-            backdrop-filter: blur(15px);
-            padding: 40px;
-            position: relative;
-            box-shadow: 0 0 30px rgba(0,0,0,1);
-        }
-
-        /* قائمة التنقل الداخلية */
-        .internal-nav {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--gold);
-            padding-bottom: 15px;
-        }
-
-        .tab-btn {
-            background: transparent;
-            border: 1px solid transparent;
-            color: #888;
-            padding: 8px 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.8em;
-            letter-spacing: 2px;
-            transition: 0.3s;
-        }
-
-        .tab-btn.active {
-            color: var(--gold);
-            border: 1px solid var(--gold);
-            background: var(--glass);
-        }
-
-        /* أقسام المحتوى */
+        :root { --gold: #D4AF37; --black: #050505; --glass: rgba(212, 175, 55, 0.05); }
+        body { background: var(--black); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; direction: ltr; }
+        #neural-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; opacity: 0.6; }
+        .main-shield { height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .content-box { width: 100%; max-width: 800px; background: rgba(0, 0, 0, 0.9); border: 1px solid var(--gold); backdrop-filter: blur(15px); padding: 40px; position: relative; }
+        .internal-nav { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid var(--gold); padding-bottom: 15px; }
+        .tab-btn { background: transparent; border: 1px solid transparent; color: #888; padding: 8px 15px; cursor: pointer; font-weight: bold; font-size: 0.8em; letter-spacing: 2px; }
+        .tab-btn.active { color: var(--gold); border: 1px solid var(--gold); background: var(--glass); }
         .page-section { display: none; animation: fadeIn 0.5s ease; }
         .page-section.active { display: block; }
-
-        h1 { color: var(--gold); letter-spacing: 5px; text-transform: uppercase; margin-top: 0; }
-        p { line-height: 1.8; color: #ccc; font-size: 1.05em; }
-        ul { padding-left: 20px; color: #aaa; }
-        li { margin-bottom: 10px; }
-
-        /* زر العودة للرئيسية */
-        .back-home {
-            position: absolute;
-            top: -20px;
-            left: 20px;
-            background: var(--black);
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            padding: 5px 15px;
-            text-decoration: none;
-            font-size: 0.7em;
-            font-weight: bold;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 600px) {
-            .content-box { padding: 20px; }
-            .internal-nav { flex-direction: column; }
-        }
+        h1 { color: var(--gold); letter-spacing: 5px; text-transform: uppercase; margin: 0 0 20px 0; font-size: 1.5em; }
+        p { line-height: 1.8; color: #ccc; font-size: 1em; }
+        .return-btn { position: absolute; top: -15px; left: 15px; background: var(--black); border: 1px solid var(--gold); color: var(--gold); padding: 4px 12px; text-decoration: none; font-size: 0.7em; font-weight: bold; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-
 <canvas id="neural-canvas"></canvas>
-
 <div class="main-shield">
     <div class="content-box">
-        <a href="index.html" class="back-home">RETURN TO CORE</a>
-        
+        <a href="index.html" class="return-btn">RETURN TO CORE</a>
         <div class="internal-nav">
             <button class="tab-btn active" onclick="showTab('about')">ABOUT</button>
             <button class="tab-btn" onclick="showTab('privacy')">PRIVACY</button>
             <button class="tab-btn" onclick="showTab('copyright')">COPYRIGHT</button>
         </div>
-
         <div id="about" class="page-section active">
             <h1>Narrative Architect</h1>
-            <p><strong>ALSHANFRICC</strong> is the digital manifestation of <strong>Muaad Al-Shanfari's</strong> vision in <strong>Narrative Engineering</strong> and <strong>Investment Architecture</strong>.</p>
-            <p>We specialize in constructing high-impact symbolic identities that remain sovereign against digital decay. Every project is a testament to the "Stone City" logic—solid, mysterious, and timeless.</p>
+            <p>ALSHANFRICC is the digital manifestation of Muaad Al-Shanfari's vision in Narrative Engineering and Investment Architecture. Every project is a testament to the "Stone City" logic—solid, mysterious, and timeless.</p>
         </div>
-
         <div id="privacy" class="page-section">
             <h1>Data Sovereignty</h1>
-            <p>Your interaction with our neural structures is governed by absolute privacy protocols.</p>
-            <ul>
-                <li><strong>No Tracking:</strong> We do not utilize intrusive tracking mechanisms.</li>
-                <li><strong>Security:</strong> All pathways are protected under "Silent Lock" logic.</li>
-                <li><strong>Encryption:</strong> Communication is secured for total confidentiality.</li>
-            </ul>
+            <p>Your interactions are governed by absolute privacy protocols. Pathways are secured under "Silent Lock" logic.</p>
         </div>
-
         <div id="copyright" class="page-section">
             <h1>Symbolic Property</h1>
-            <p>All contents, including the "The Stone City's Testament" and unique architectural codes, are the exclusive property of <strong>Muaad Mohammed Al-Shanfari</strong>.</p>
-            <p>© 2026 ALSHANFRICC. THE ARCHITECT OF GLOBAL INVESTMENTS.</p>
-            <p>Unauthorized duplication of this narrative structure will be met with architectural countermeasures.</p>
+            <p>© 2026 ALSHANFRICC. All rights reserved. Content protected for Muaad Mohammed Al-Shanfari.</p>
         </div>
     </div>
 </div>
-
 <script>
-    // 1. Neural Network Animation
     const canvas = document.getElementById('neural-canvas');
     const ctx = canvas.getContext('2d');
-    let points = [];
-    const maxPoints = 60;
-
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    let pts = [];
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.onresize = resize; resize();
+    class P {
+        constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.vx = (Math.random()-0.5)*0.3; this.vy = (Math.random()-0.5)*0.3; }
+        update() { this.x += this.vx; this.y += this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
     }
-
-    class Point {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.vx = (Math.random() - 0.5) * 0.3;
-            this.vy = (Math.random() - 0.5) * 0.3;
-        }
-        update() {
-            this.x += this.vx; this.y += this.vy;
-            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-        }
-    }
-
-    function init() {
-        resize();
-        for (let i = 0; i < maxPoints; i++) points.push(new Point());
-        animate();
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = 'rgba(212, 175, 55, 0.15)';
-        ctx.fillStyle = 'rgba(212, 175, 55, 0.4)';
-        
-        points.forEach((p, i) => {
+    for(let i=0; i<50; i++) pts.push(new P());
+    function anim() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.strokeStyle = "rgba(212,175,55,0.15)";
+        ctx.fillStyle = "rgba(212,175,55,0.4)";
+        pts.forEach((p,i)=>{
             p.update();
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
-            ctx.fill();
-            
-            for (let j = i + 1; j < points.length; j++) {
-                const d = Math.hypot(p.x - points[j].x, p.y - points[j].y);
-                if (d < 180) {
-                    ctx.beginPath();
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(points[j].x, points[j].y);
-                    ctx.stroke();
-                }
+            ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI*2); ctx.fill();
+            for(let j=i+1; j<pts.length; j++) {
+                let d = Math.hypot(p.x-pts[j].x, p.y-pts[j].y);
+                if(d<180) { ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); }
             }
         });
-        requestAnimationFrame(animate);
+        requestAnimationFrame(anim);
     }
-
-    init();
-    window.addEventListener('resize', resize);
-
-    // 2. Tab Switching Logic
-    function showTab(tabId) {
+    anim();
+    function showTab(id) {
         document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        
-        document.getElementById(tabId).classList.add('active');
+        document.getElementById(id).classList.add('active');
         event.currentTarget.classList.add('active');
     }
 </script>
-
 </body>
 </html>
