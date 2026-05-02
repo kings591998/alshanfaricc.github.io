@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>الأدمن</title>
+<style>body{background:#000;color:#eee;font-family:'Tajawal',Tahoma;padding:20px;max-width:800px;margin:auto}input,textarea{width:100%;padding:10px;margin:8px 0;background:#111;color:#eee;border:1px solid #D4AF37;border-radius:6px}button{padding:10px 20px;background:#D4AF37;color:#000;border:0;border-radius:6px;cursor:pointer;margin:5px;font-weight:bold}.box{background:#111;padding:20px;margin:15px 0;border-radius:10px}h2{color:#D4AF37}</style>
+</head>
+<body>
+<h1 style="text-align:center;color:#D4AF37">لوحة التحكم</h1>
+
+<div class="box">
+<h2>إضافة مقال</h2>
+<input id="tag" placeholder="الوسم (مثال: علوم)">
+<input id="title" placeholder="عنوان المقال">
+<textarea id="content" rows="10" placeholder="اكتب المحتوى هنا
+استخدم ## للعنوان الفرعي"></textarea>
+<button onclick="publish()">نشر المقال</button>
+</div>
+
+<div class="box">
+<h2>المقالات المنشورة</h2>
+<div id="list"></div>
+</div>
+
+<div class="box" style="text-align:center">
+<a href="index.html" style="color:#D4AF37">← العودة للموقع</a>
+</div>
+
+<script>
+function publish(){
+  if(!title.value) return alert('اكتب عنوان');
+  const arts = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+  const art = {
+    id: Date.now(),
+    title: title.value,
+    content: content.value,
+    tags: tag.value || 'الرئيسية',
+    date: new Date().toISOString(),
+    views: 0
+  };
+  arts.unshift(art);
+  localStorage.setItem('alshanfricc_articles', JSON.stringify(arts));
+  alert('تم النشر بنجاح!');
+  title.value=''; content.value=''; tag.value='';
+  loadList();
+}
+
+function loadList(){
+  const arts = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+  document.getElementById('list').innerHTML = arts.map(a=>`
+    <div style="background:#222;padding:10px;margin:8px 0;border-radius:6px">
+      <b>${a.title}</b> - #${a.tags}
+      <button onclick="del(${a.id})" style="float:left;background:#ff4444;color:#fff;padding:4px 8px">حذف</button>
+    </div>
+  `).join('');
+}
+
+function del(id){
+  let arts = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+  arts = arts.filter(a=>a.id!=id);
+  localStorage.setItem('alshanfricc_articles', JSON.stringify(arts));
+  loadList();
+}
+
+loadList();
+</script>
+</body>
+</html>
