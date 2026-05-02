@@ -3,48 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ALSHANFRICC - النواة السيادية</title>
+<title>ALSHANFRICC</title>
 <style>
 :root{--bg:#050505;--gold:#D4AF37;--cyan:#00f2ff}
-html,body{margin:0;height:100%;background:var(--bg);color:#eee;font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma;overflow:hidden}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:#eee;font-family:'Segoe UI',Tahoma;overflow-x:hidden}
 #neural{position:fixed;inset:0;z-index:0}
-#headerFrame{
-  position:fixed;top:0;left:0;width:100%;height:320px;
-  border:0;z-index:1000;background:transparent;
-  pointer-events:none;overflow:visible
-}
-#contentFrame{
-  position:absolute;top:72px;left:0;width:100%;height:calc(100% - 72px);
-  border:0;z-index:5;background:transparent;transition:filter.4s
-}
+#header{position:fixed;top:0;left:0;right:0;z-index:1000}
+#main{position:relative;z-index:5;padding-top:100px;min-height:100vh;transition:filter.4s}
+#footer{position:relative;z-index:5}
 body.light #neural{filter:invert(1) hue-rotate(180deg) brightness(.95)}
-body.light #contentFrame{filter:invert(1) hue-rotate(180deg)}
+body.light #main{filter:invert(1) hue-rotate(180deg)}
 </style>
 </head>
 <body>
 <canvas id="neural"></canvas>
-<iframe id="headerFrame" src="header.html" scrolling="no" allowtransparency="true"></iframe>
-<iframe id="contentFrame" srcdoc="<div style='padding:70px 20px;text-align:center;color:#D4AF37;font-family:tahoma'><h1 style='font-weight:300;letter-spacing:3px;margin:0 0 12px'>النواة السيادية</h1><p style='color:#00f2ff;margin:0'>هندسة السرد • عمارة الاستثمار • الأنظمة الذكية</p></div>"></iframe>
+<div id="header"></div>
+<main id="main"></main>
+<div id="footer"></div>
 
 <script>
-// شبكة عصبية ذهبية/سياني
-const c=document.getElementById('neural'),x=c.getContext('2d');let w,h,pts=[];
-function rs(){w=c.width=innerWidth;h=c.height=innerHeight;pts=Array.from({length:90},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6}))}
-addEventListener('resize',rs);rs();
-function draw(){
-  x.clearRect(0,0,w,h);
-  pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,1.6,0,7);x.fillStyle='#D4AF37';x.fill()});
-  for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<130){x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.strokeStyle=`rgba(0,242,255,${1-d/130})`;x.lineWidth=.45;x.stroke()}}}
-  requestAnimationFrame(draw)
-}draw();
+async function load(){
+  const [h,f,b]=await Promise.all([
+    fetch('header.html').then(r=>r.text()),
+    fetch('footer.html').then(r=>r.text()),
+    fetch('body.html').then(r=>r.text())
+  ]);
+  document.getElementById('header').innerHTML=h;
+  document.getElementById('footer').innerHTML=f;
+  document.getElementById('main').innerHTML=b;
+  initHeader();
+  renderArticles();
+}
+load();
 
-// استقبال أوامر من الهيدر
-window.addEventListener('message',e=>{
-  if(e.data.type==='theme'){document.body.classList.toggle('light',e.data.mode==='light')}
-  if(e.data.type==='navigate'){
-    document.getElementById('contentFrame').srcdoc = `<div style="padding:40px;color:#D4AF37;font-family:tahoma"><h2 style="font-weight:400">${e.data.page}</h2><p style="color:#00f2ff">محتوى ${e.data.page} يظهر هنا...</p></div>`;
-  }
-});
+const c=document.getElementById('neural'),x=c.getContext('2d');let w,h,pts=[];
+function rs(){w=c.width=innerWidth;h=c.height=innerHeight;pts=Array.from({length:100},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6}))}
+addEventListener('resize',rs);rs();
+(function draw(){x.clearRect(0,0,w,h);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,1.7,0,7);x.fillStyle='#D4AF37';x.fill()});for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<140){x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.strokeStyle=`rgba(0,242,255,${1-d/140})`;x.lineWidth=.5;x.stroke()}}requestAnimationFrame(draw)})();
+
+function initHeader(){
+  const menu=document.getElementById('menu');
+  document.getElementById('tabs').onclick=()=>menu.classList.toggle('show');
+  document.getElementById('light').onclick=()=>document.body.classList.toggle('light');
+  document.getElementById('search').onclick=()=>document.getElementById('searchBox').focus();
+  document.getElementById('contact').onclick=()=>location.href='admin.html';
+  menu.querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();filterBy(a.dataset.page);menu.classList.remove('show')});
+}
+
+function renderArticles(filter=''){
+  const grid=document.getElementById('articles-grid');
+  if(!grid) return;
+  const arts=JSON.parse(localStorage.getItem('alshanfricc_articles')||'[]').reverse();
+  const list=filter?arts.filter(a=>a.category===filter):arts;
+  grid.innerHTML=list.map(a=>`
+    <article onclick="openArticle('${a.id}')" style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.25);border-radius:16px;overflow:hidden;cursor:pointer">
+      ${a.image?`<img src="${a.image}" style="width:100%;height:180px;object-fit:cover">`:''}
+      <div style="padding:16px">
+        <div style="color:var(--cyan);font-size:12px">${a.category} • ${new Date(a.date).toLocaleDateString('ar')}</div>
+        <h3 style="margin:8px 0;color:var(--gold);font-weight:400">${a.title}</h3>
+        <p style="color:#bbb;font-size:14px;margin:0">${a.content.slice(0,80)}...</p>
+      </div>
+    </article>
+  `).join('') || '<p style="text-align:center;color:#666">لا توجد مقالات بعد. انشر من لوحة الأدمن.</p>';
+}
+
+function filterBy(cat){renderArticles(cat)}
+function openArticle(id){location.href=`article.html?id=${id}`}
 </script>
 </body>
 </html>
