@@ -3,25 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALSHANFRICC | Digital Architecture</title>
+    <title>ALSHANFRICC | Official Platform</title>
     <style>
         :root {
             --gold: #D4AF37;
             --black: #050505;
             --glass: rgba(212, 175, 55, 0.08);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { box-sizing: border-box; }
+        /* منع مشاكل الترجمة وتثبيت الهوية البصرية */
+        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         body { 
             background: var(--black); 
             color: #fff; 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            font-family: 'Segoe UI', sans-serif; 
             margin: 0; 
             overflow-x: hidden;
-            direction: ltr; /* نثبت الاتجاه للغة الإنجليزية لمنع تداخل العناصر عند الترجمة الآلية */
+            direction: ltr; /* تثبيت الاتجاه لمنع تداخل العناصر عند الترجمة */
         }
 
-        /* خلفية الخلايا العصبية */
+        /* خلفية الخلايا العصبية (Neural Background) */
         #neural-canvas {
             position: fixed;
             top: 0; left: 0;
@@ -29,101 +31,106 @@
             width: 100%; height: 100%;
         }
 
-        /* خط التقدم */
-        #progress-bar {
+        /* خط التقدم للتمرير (Progress Bar) */
+        #scroll-progress {
             position: fixed;
             top: 0; left: 0;
             height: 4px;
-            background: var(--gold);
-            z-index: 2000;
+            background: linear-gradient(to right, #996515, var(--gold));
             width: 0%;
-            box-shadow: 0 0 10px var(--gold);
+            z-index: 2001;
+            box-shadow: 0 0 15px var(--gold);
         }
 
+        /* الهيدر */
         header {
             text-align: center;
-            padding: 50px 20px;
+            padding: 60px 20px;
             background: linear-gradient(to bottom, #000, transparent);
         }
         header h1 {
             color: var(--gold);
             font-size: clamp(2.5em, 10vw, 4em);
             margin: 0;
-            letter-spacing: 10px;
-            text-transform: uppercase;
+            letter-spacing: 12px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
         }
 
-        /* القائمة المتوازية عرضاً */
-        .top-nav {
+        /* المستطيلات البيضاء المتوازية (Navigation) */
+        .nav-container {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 10px;
-            padding: 0 20px 40px;
+            gap: 12px;
+            padding: 0 20px 50px;
         }
-        .nav-item {
+        .nav-link {
             background: #fff;
             color: #000;
-            padding: 12px 30px;
-            border-radius: 4px;
+            padding: 14px 35px;
+            border-radius: 2px;
             text-decoration: none;
-            font-weight: 800;
-            font-size: 0.9em;
+            font-weight: 900;
+            font-size: 0.85em;
             border: 2px solid var(--gold);
-            min-width: 160px;
+            min-width: 170px;
             text-align: center;
+            transition: var(--transition);
         }
-        .nav-item:hover { background: var(--gold); color: #fff; transform: translateY(-3px); }
+        .nav-link:hover {
+            background: var(--gold);
+            color: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(212,175,55,0.2);
+        }
 
-        /* حاوية المقالات */
-        .content-area {
-            max-width: 1000px;
+        /* منطقة المقالات (Article Cards) */
+        .content-wrapper {
+            max-width: 1100px;
             margin: auto;
             padding: 20px;
         }
-
-        /* تصميم المستطيلات الملكي التقني */
         .card {
             background: var(--glass);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            margin-bottom: 30px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            margin-bottom: 40px;
             display: flex;
-            border-radius: 4px;
+            border-radius: 8px;
             overflow: hidden;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             position: relative;
+            transition: var(--transition);
         }
-        .card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(212,175,55,0.05));
-            pointer-events: none;
-        }
-        .card-img {
-            width: 280px;
-            height: 180px;
+        .card:hover { border-color: var(--gold); transform: scale(1.01); }
+        
+        .card-image {
+            width: 320px;
+            height: 220px;
             background: #111;
             flex-shrink: 0;
             border-right: 1px solid var(--gold);
         }
-        .card-body { padding: 25px; flex-grow: 1; }
-        .card-body h2 { color: var(--gold); margin: 0 0 10px 0; font-size: 1.4em; }
-        
-        /* أزرار المشاركة */
-        .actions { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-sml {
+        .card-body { padding: 30px; flex-grow: 1; }
+        .card-body h2 { color: var(--gold); margin: 0 0 15px 0; font-size: 1.6em; }
+        .card-body p { color: #ccc; line-height: 1.6; font-size: 0.95em; }
+
+        /* أزرار المشاركة والنسخ */
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; }
+        .action-btn {
             background: transparent;
             border: 1px solid var(--gold);
             color: var(--gold);
-            padding: 5px 15px;
-            border-radius: 20px;
+            padding: 7px 18px;
+            border-radius: 3px;
             cursor: pointer;
             font-size: 0.75em;
+            font-weight: bold;
+            transition: 0.3s;
         }
+        .action-btn:hover { background: var(--gold); color: #000; }
 
-        /* الأزرار العائمة يساراً */
-        .floating-controls {
+        /* الأزرار العائمة يساراً (Floating Controls) */
+        .sidebar-controls {
             position: fixed;
             bottom: 40px;
             left: 40px;
@@ -132,7 +139,7 @@
             gap: 15px;
             z-index: 3000;
         }
-        .float-btn {
+        .circle-btn {
             width: 55px;
             height: 55px;
             border-radius: 50%;
@@ -143,83 +150,91 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(212,175,55,0.2);
+            font-size: 20px;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
         }
+        .circle-btn:hover { background: var(--gold); color: #000; transform: scale(1.1); }
 
-        /* الفوتر المتكامل */
+        /* تذييل الصفحة (Footer) */
         footer {
-            margin-top: 100px;
+            margin-top: 80px;
             padding: 60px 20px;
             border-top: 1px solid var(--gold);
             background: #000;
             text-align: center;
         }
-        .footer-social { margin-bottom: 25px; }
-        .footer-social a { color: var(--gold); font-size: 1.5em; margin: 0 15px; text-decoration: none; }
-        .footer-links a { color: #888; text-decoration: none; margin: 0 10px; font-size: 0.8em; }
+        .footer-socials { margin-bottom: 30px; display: flex; justify-content: center; gap: 20px; }
+        .footer-socials a { color: var(--gold); font-size: 1.6em; text-decoration: none; transition: 0.3s; }
+        .footer-socials a:hover { transform: translateY(-5px); opacity: 0.8; }
+        
+        .footer-links a { color: #777; text-decoration: none; margin: 0 15px; font-size: 0.8em; font-weight: bold; }
+        .footer-links a:hover { color: var(--gold); }
 
-        @media (max-width: 768px) {
+        @media (max-width: 850px) {
             .card { flex-direction: column; }
-            .card-img { width: 100%; }
-            .nav-item { min-width: 140px; flex: 1; }
+            .card-image { width: 100%; height: 250px; border-right: none; border-bottom: 1px solid var(--gold); }
+            .sidebar-controls { left: 20px; bottom: 20px; }
         }
     </style>
 </head>
 <body>
 
 <canvas id="neural-canvas"></canvas>
-<div id="progress-bar"></div>
+<div id="scroll-progress"></div>
 
 <header>
     <h1>ALSHANFRICC</h1>
 </header>
 
-<nav class="top-nav">
-    <a href="index.html" class="nav-item">HOME</a>
-    <a href="narrative.html" class="nav-item">NARRATIVE ENG.</a>
-    <a href="mystery.html" class="nav-item">MYSTERY ENG.</a>
-    <a href="investment.html" class="nav-item">INVESTMENT ARCH.</a>
-    <a href="business.html" class="nav-item">BUSINESS INTEL.</a>
+<nav class="nav-container">
+    <a href="index.html" class="nav-link">HOME</a>
+    <a href="#" class="nav-link">NARRATIVE ENG.</a>
+    <a href="#" class="nav-link">MYSTERY ENG.</a>
+    <a href="#" class="nav-link">INVESTMENT ARCH.</a>
+    <a href="#" class="nav-link">BUSINESS INTEL.</a>
 </nav>
 
-<div class="content-area">
+<div class="content-wrapper" id="post-container">
     <div class="card">
-        <div class="card-img" style="background: url('img1.jpg') center/cover;"></div>
+        <div class="card-image" style="background: url('https://source.unsplash.com/random/800x600?tech,gold') center/cover;"></div>
         <div class="card-body">
-            <h2>The Neural Logic of Assets</h2>
-            <p>Decoding the symbolic structures within modern financial markets for 2026.</p>
-            <div class="actions">
-                <button class="btn-sml" onclick="copyUrl()">Copy URL</button>
-                <button class="btn-sml">Share on X</button>
+            <h2>The Stone City's Testament</h2>
+            <p>Decoding the symbolic architecture of power and narrative engineering in the digital age.</p>
+            <div class="btn-group">
+                <button class="action-btn" onclick="copyLink()">Copy URL</button>
+                <button class="action-btn">Share on X</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="floating-controls">
-    <div class="float-btn" id="moon-btn" onclick="toggleTheme()" title="Toggle Moon">🌙</div>
-    <div class="float-btn" onclick="history.back()" title="Go Back">⬅</div>
-    <div class="float-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})">▲</div>
+<div class="sidebar-controls">
+    <div class="circle-btn" onclick="toggleMoon()" title="Moon/Sun Mode">🌙</div>
+    <div class="circle-btn" onclick="history.back()" title="Go Back">⬅</div>
+    <div class="circle-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Top">▲</div>
 </div>
 
 <footer>
-    <div class="footer-social">
+    <div class="footer-socials">
         <a href="#">𝕏</a> <a href="#">WA</a> <a href="#">TG</a> <a href="#">FB</a>
     </div>
     <div class="footer-links">
-        <a href="about.html">ABOUT US</a> | <a href="privacy.html">PRIVACY</a> | <a href="copyright.html">COPYRIGHT</a>
+        <a href="about.html">ABOUT</a> | <a href="privacy.html">PRIVACY</a> | <a href="copyright.html">COPYRIGHT</a>
     </div>
-    <p style="color:var(--gold); font-size:0.7em; margin-top:20px; opacity:0.5;">&copy; 2026 ALSHANFRICC. THE STONE CITY'S TESTAMENT.</p>
+    <p style="color:var(--gold); font-size:0.75em; margin-top:30px; opacity:0.6; letter-spacing: 2px;">
+        &copy; 2026 ALSHANFRICC. ARCHITECT OF GLOBAL INVESTMENTS.
+    </p>
 </footer>
 
 <script>
-    // 1. Neural Cells Animation (الخلايا العصبية)
+    // 1. Neural Cells Effect
     const canvas = document.getElementById('neural-canvas');
     const ctx = canvas.getContext('2d');
     let points = [];
-    const maxPoints = 80;
+    const maxPoints = 70;
 
-    function initCanvas() {
+    function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
@@ -228,32 +243,36 @@
         constructor() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.vx = (Math.random() - 0.5) * 0.5;
-            this.vy = (Math.random() - 0.5) * 0.5;
+            this.vx = (Math.random() - 0.5) * 0.4;
+            this.vy = (Math.random() - 0.5) * 0.4;
         }
-        update() {
+        move() {
             this.x += this.vx; this.y += this.vy;
             if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
             if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
         }
     }
 
-    for (let i = 0; i < maxPoints; i++) points.push(new Point());
+    function init() {
+        resize();
+        for (let i = 0; i < maxPoints; i++) points.push(new Point());
+        loop();
+    }
 
-    function animate() {
+    function loop() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = 'rgba(212, 175, 55, 0.15)';
+        ctx.strokeStyle = 'rgba(212, 175, 55, 0.12)';
         ctx.fillStyle = 'rgba(212, 175, 55, 0.3)';
         
         points.forEach((p, i) => {
-            p.update();
+            p.move();
             ctx.beginPath();
-            ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+            ctx.arc(p.x, p.y, 1.2, 0, Math.PI * 2);
             ctx.fill();
             
             for (let j = i + 1; j < points.length; j++) {
-                const d = Math.hypot(p.x - points[j].x, p.y - points[j].y);
-                if (d < 150) {
+                const dist = Math.hypot(p.x - points[j].x, p.y - points[j].y);
+                if (dist < 160) {
                     ctx.beginPath();
                     ctx.moveTo(p.x, p.y);
                     ctx.lineTo(points[j].x, points[j].y);
@@ -261,190 +280,27 @@
                 }
             }
         });
-        requestAnimationFrame(animate);
+        requestAnimationFrame(loop);
     }
+    init();
+    window.addEventListener('resize', resize);
 
-    window.addEventListener('resize', initCanvas);
-    initCanvas();
-    animate();
-
-    // 2. Progress Bar
+    // 2. Scroll Progress Bar
     window.onscroll = () => {
         let winScroll = document.documentElement.scrollTop;
         let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        document.getElementById("progress-bar").style.width = (winScroll / height) * 100 + "%";
+        document.getElementById("scroll-progress").style.width = (winScroll / height) * 100 + "%";
     };
 
-    // 3. Theme Toggle (Moon Logic)
-    function toggleTheme() {
-        const moon = document.getElementById('moon-btn');
-        document.body.classList.toggle('light-mode');
-        // يمكن إضافة CSS للـ light mode هنا
-        moon.innerText = moon.innerText === '🌙' ? '☀️' : '🌙';
+    // 3. Moon Toggle Logic
+    function toggleMoon() {
+        document.body.style.filter = document.body.style.filter === 'invert(0.9) hue-rotate(180deg)' ? 'invert(0)' : 'invert(0.9) hue-rotate(180deg)';
     }
 
-    function copyUrl() {
+    function copyLink() {
         navigator.clipboard.writeText(window.location.href);
-        alert("Link Copied!");
+        alert("Link copied to clipboard.");
     }
-</script>
-
-</body>
-</html>
-            backdrop-filter: blur(10px);
-        }
-        .article-card::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 0; width: 5px; height: 100%;
-            background: var(--gold);
-        }
-        .article-img {
-            width: 300px;
-            height: 200px;
-            background: #222;
-            flex-shrink: 0;
-            border-right: 1px solid var(--gold);
-        }
-        .article-content { padding: 25px; flex-grow: 1; }
-        .article-content h2 { color: var(--gold); margin-top: 0; font-size: 1.5em; }
-
-        /* أزرار المشاركة داخل كل مقال */
-        .share-row {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-        }
-        .share-btn {
-            background: var(--glass);
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            cursor: pointer;
-        }
-
-        /* الأزرار العائمة (الإضاءة والرجوع) */
-        .floating-controls {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 1001;
-        }
-        .float-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--black);
-            border: 2px solid var(--gold);
-            color: var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-        .float-btn:hover { background: var(--gold); color: #000; }
-
-        /* تذييل الصفحة الثابت */
-        footer {
-            background: #000;
-            padding: 40px 20px;
-            border-top: 1px solid var(--gold);
-            text-align: center;
-        }
-        .social-footer {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .social-footer a { color: var(--gold); font-size: 1.5em; text-decoration: none; }
-
-        /* دعم الجوال */
-        @media (max-width: 768px) {
-            .article-card { flex-direction: column; }
-            .article-img { width: 100%; height: 200px; }
-            .nav-item { min-width: 45%; }
-        }
-    </style>
-</head>
-<body>
-
-<div id="progress-container"><div id="progress-bar"></div></div>
-
-<header>
-    <h1>ALSHANFRICC</h1>
-</header>
-
-<nav class="top-menu">
-    <a href="index.html" class="nav-item">Home</a>
-    <a href="#" class="nav-item">Narrative Eng.</a>
-    <a href="#" class="nav-item">Mystery Eng.</a>
-    <a href="#" class="nav-item">Investment Arch.</a>
-    <a href="#" class="nav-item">Business Intel</a>
-</nav>
-
-<div class="main-container" id="articles-wrapper">
-    <div class="article-card">
-        <div class="article-img" style="background-image: url('https://via.placeholder.com/300x200'); background-size: cover;"></div>
-        <div class="article-content">
-            <h2>The Neural Logic of Investment</h2>
-            <p>Exploring the intersection of cognitive patterns and market fluctuations in the 2026 digital economy.</p>
-            <div class="share-row">
-                <button class="share-btn" onclick="copyUrl()">Copy Link</button>
-                <button class="share-btn" onclick="shareX()">Share on X</button>
-            </div>
-        </div>
-    </div>
-    </div>
-
-<div class="floating-controls">
-    <div class="float-btn" onclick="toggleMode()" title="Toggle Moon/Sun Mode">🌙</div>
-    <div class="float-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Scroll to Top">▲</div>
-</div>
-
-<footer>
-    <div class="social-footer">
-        <a href="#">𝕏</a>
-        <a href="#">WA</a>
-        <a href="#">TG</a>
-        <a href="#">FB</a>
-    </div>
-    <div style="font-size: 0.9em; color: var(--gold);">
-        <a href="about.html" style="color: inherit; margin: 0 10px;">About Us</a> | 
-        <a href="privacy.html" style="color: inherit; margin: 0 10px;">Privacy Policy</a> | 
-        <a href="copyright.html" style="color: inherit; margin: 0 10px;">Copyrights</a>
-    </div>
-    <p style="margin-top: 20px; opacity: 0.5;">&copy; 2026 ALSHANFRICC. All Rights Reserved.</p>
-</footer>
-
-<script>
-    // تحديث خط التقدم
-    window.onscroll = function() {
-        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        let scrolled = (winScroll / height) * 100;
-        document.getElementById("progress-bar").style.width = scrolled + "%";
-    };
-
-    // وضع الإضاءة (القمر)
-    function toggleMode() {
-        document.body.style.filter = document.body.style.filter === 'invert(1)' ? 'invert(0)' : 'invert(1)';
-    }
-
-    // وظيفة النسخ
-    function copyUrl() {
-        navigator.clipboard.writeText(window.location.href);
-        alert("Link Copied!");
-    }
-
-    // منع إعادة التحميل وفقدان الذاكرة (Service Worker Cache Logic can be added later)
 </script>
 
 </body>
