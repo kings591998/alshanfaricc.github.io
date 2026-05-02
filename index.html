@@ -7,64 +7,53 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --gold: #D4AF37; --black: #050505; }
-        body { background: var(--black); margin: 0; overflow-x: hidden; font-family: sans-serif; transition: 0.5s; }
-        #neural-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.4; pointer-events: none; }
+        body { background: var(--black); margin: 0; overflow-x: hidden; transition: 0.5s; }
+        /* تحسين وضوح الشبكة العصبية للكمبيوتر */
+        #neural-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.6; pointer-events: none; background: radial-gradient(circle at center, #0a0a0a 0%, #050505 100%); }
         .module-frame { width: 100%; border: none; display: block; }
-        
-        /* أزرار التحكم الجانبية - حيلة L2 */
         .controls { position: fixed; left: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 15px; }
-        .btn { width: 40px; height: 40px; border: 1px solid var(--gold); border-radius: 50%; color: var(--gold); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(0,0,0,0.5); transition: 0.3s; }
-        .btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 15px var(--gold); }
-        
-        #scroll-pct { position: fixed; bottom: 20px; right: 30px; color: var(--gold); font-size: 0.7em; opacity: 0.6; }
+        .btn { width: 45px; height: 45px; border: 1px solid var(--gold); border-radius: 50%; color: var(--gold); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(0,0,0,0.8); transition: 0.3s; }
+        .btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
+        #scroll-pct { position: fixed; bottom: 20px; right: 30px; color: var(--gold); font-size: 0.8em; letter-spacing: 2px; z-index: 1000; }
         .light-mode { filter: invert(1) hue-rotate(180deg); background: #fff; }
     </style>
 </head>
 <body>
-
 <canvas id="neural-canvas"></canvas>
-
 <div class="controls">
-    <div class="btn" onclick="toggleLight()" title="Toggle Light"><i class="fas fa-moon"></i></div>
-    <div class="btn" onclick="window.history.back()" title="Back"><i class="fas fa-arrow-left"></i></div>
-    <div class="btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Top"><i class="fas fa-chevron-up"></i></div>
+    <div class="btn" onclick="document.body.classList.toggle('light-mode')"><i class="fas fa-eye"></i></div>
+    <div class="btn" onclick="window.history.back()"><i class="fas fa-chevron-left"></i></div>
+    <div class="btn" onclick="window.scrollTo({top:0, behavior:'smooth'})"><i class="fas fa-arrow-up"></i></div>
 </div>
-
 <div id="scroll-pct">0% DECODED</div>
 
-<iframe src="header.html" class="module-frame" style="height: 300px;"></iframe>
-<iframe src="articles.html" class="module-frame" style="height: 1500px;"></iframe>
+<iframe src="header.html" class="module-frame" style="height: 350px;"></iframe>
+<iframe src="articles.html" class="module-frame" style="height: 2000px;"></iframe>
 <iframe src="footer.html" class="module-frame" style="height: 150px;"></iframe>
 
 <script>
-    // حيلة إضاءة السيادة (L2)
-    function toggleLight() { document.body.classList.toggle('light-mode'); }
-
-    // عداد التمرير (L2)
-    window.onscroll = () => {
-        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        document.getElementById("scroll-pct").innerText = Math.round((winScroll / height) * 100) + "% DECODED";
-    };
-
-    // الشبكة العصبية (L4+L5)
     const canvas = document.getElementById('neural-canvas');
     const ctx = canvas.getContext('2d');
     let pts = [];
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.onresize = resize; resize();
     class P {
-        constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.vx=(Math.random()-0.5)*0.3; this.vy=(Math.random()-0.5)*0.3; }
+        constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.vx=(Math.random()-0.5)*0.5; this.vy=(Math.random()-0.5)*0.5; }
         update() { this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
     }
-    for(let i=0; i<45; i++) pts.push(new P());
+    // زيادة عدد النقاط للكمبيوتر
+    for(let i=0; i<80; i++) pts.push(new P());
     function anim() {
-        ctx.clearRect(0,0,canvas.width,canvas.height); ctx.strokeStyle = "rgba(212,175,55,0.15)";
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.strokeStyle = "rgba(212,175,55,0.25)"; // زيادة وضوح الخطوط
         pts.forEach((p,i)=>{
             p.update();
             for(let j=i+1; j<pts.length; j++) {
                 let d = Math.hypot(p.x-pts[j].x, p.y-pts[j].y);
-                if(d<160) { ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); }
+                if(d<200) { // زيادة مدى الاتصال
+                    ctx.lineWidth = 1 - d/200;
+                    ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke();
+                }
             }
         });
         requestAnimationFrame(anim);
