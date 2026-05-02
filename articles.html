@@ -1,51 +1,40 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
-    :root { --gold: #D4AF37; }
     body { background: transparent; color: #fff; font-family: sans-serif; padding: 20px; }
-    .article-card { max-width: 850px; margin: 30px auto; background: rgba(15,15,15,0.9); border: 1px solid #333; display: flex; position: relative; animation: goldPulse 4s infinite alternate; }
-    .category-tag { position: absolute; top: 10px; right: 10px; background: var(--gold); color: #000; padding: 2px 12px; font-size: 0.7em; font-weight: bold; }
-    .article-img { width: 300px; background: #111; border-right: 1px solid var(--gold); }
-    .article-content { padding: 30px; flex: 1; }
-    .article-content h2 { color: var(--gold); }
-    .reveal-text { opacity: 0; visibility: hidden; }
-    .reveal-text.active { opacity: 1; visibility: visible; }
-    @keyframes goldPulse { from { box-shadow: 0 0 5px rgba(212,175,55,0.1); } to { box-shadow: 0 0 20px rgba(212,175,55,0.3); } }
+    .card { max-width: 800px; margin: 40px auto; background: rgba(10,10,10,0.9); border: 1px solid #222; display: flex; position: relative; }
+    .card-img { width: 250px; background: #111; border-right: 1px solid #333; }
+    .card-txt { padding: 30px; flex: 1; }
+    .card-txt h2 { color: #D4AF37; margin: 0 0 10px 0; }
+    .reveal { opacity: 0; transition: 0.8s; }
+    .reveal.active { opacity: 1; }
 </style>
 
-<div class="article-card">
-    <div class="category-tag">INVESTMENT ARCH.</div>
-    <div class="article-img"></div>
-    <div class="article-content">
-        <h2 class="reveal-text">The Neural Logic of Assets</h2>
-        <p class="reveal-text">Engineering mystery, defining the architecture of future narratives.</p>
-        <a href="#" style="color:var(--gold); font-weight:bold; text-decoration:none;">READ MORE...</a>
+<div class="card">
+    <div class="card-img"></div>
+    <div class="card-txt">
+        <h2 class="reveal">Sovereign Investment Architect</h2>
+        <p class="reveal">Building timeless identities and symbolic narratives in the digital age.</p>
     </div>
 </div>
 
 <script>
-    // حيلة 5: الكتابة التلقائية (Typewriter Scroll)
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && !entry.target.classList.contains('typed')) {
-                const text = entry.target.innerText;
-                entry.target.innerText = '';
-                entry.target.classList.add('active', 'typed');
-                let i = 0;
-                const timer = setInterval(() => {
-                    if (i < text.length) { entry.target.innerText += text.charAt(i); i++; }
-                    else clearInterval(timer);
-                }, 40);
+    // حيلة L4: الكتابة التلقائية
+    const obs = new IntersectionObserver((es) => {
+        es.forEach(e => {
+            if (e.isIntersecting && !e.target.dataset.typed) {
+                const t = e.target.innerText; e.target.innerText = '';
+                e.target.classList.add('active'); e.target.dataset.typed = "true";
+                let i = 0; const tm = setInterval(() => {
+                    if (i < t.length) { e.target.innerText += t.charAt(i); i++; }
+                    else clearInterval(tm);
+                }, 30);
             }
         });
-    }, { threshold: 0.5 });
-    document.querySelectorAll('.reveal-text').forEach(el => observer.observe(el));
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-    // حيلة 1: بصمة النسخ
+    // حيلة L5: الصدى السردي والردع الرقمي
     document.addEventListener('copy', (e) => {
-        const text = window.getSelection().toString();
-        const mark = `\n\n© 2026 ALSHANFRICC | Muaad Al-Shanfari`;
-        e.clipboardData.setData('text/plain', text + mark);
+        alert("Patience... Wisdom is not gathered in haste.");
         e.preventDefault();
     });
 </script>
-
