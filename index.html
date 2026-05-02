@@ -1,161 +1,259 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALSHANFRICC | Official Platform</title>
+    <title>ALSHANFRICC | Narrative & Investment</title>
     <style>
-        :root { --gold: #D4AF37; --black: #000; --sidebar-bg: #D4AF37; --main-bg: #D4AF37; }
-        
-        * { box-sizing: border-box; }
-        body { background-color: var(--black); color: #000; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
-        
-        header { background: var(--black); text-align: center; padding: 20px; border-bottom: 5px solid red; margin-bottom: 10px; }
-        header h1 { color: var(--gold); margin: 0; font-size: clamp(1.5em, 5vw, 2.5em); letter-spacing: 3px; }
+        :root {
+            --gold: #D4AF37;
+            --dark-gold: #996515;
+            --black: #050505;
+            --glass: rgba(212, 175, 55, 0.1);
+        }
 
-        /* Layout Container */
-        .wrapper { display: flex; gap: 10px; max-width: 1400px; margin: auto; flex-direction: row; }
+        * { box-sizing: border-box; transition: all 0.3s ease; }
+        body { 
+            background: var(--black); 
+            color: #fff; 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            margin: 0; 
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #050505 100%);
+        }
 
-        /* Sidebar - يتغير مكانه حسب الشاشة */
-        aside { 
-            width: 250px; 
-            background: var(--sidebar-bg); 
-            border: 5px solid #000; 
-            border-radius: 10px; 
-            padding: 15px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
+        /* خط التقدم للتمرير */
+        #progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            z-index: 1000;
+        }
+        #progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--dark-gold), var(--gold));
+            width: 0%;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        /* الهيدر الملكي */
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 2px solid var(--gold);
+            background: linear-gradient(to bottom, #000, #111);
+        }
+        header h1 {
+            color: var(--gold);
+            font-size: clamp(2em, 8vw, 3.5em);
+            margin: 0;
+            letter-spacing: 8px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        /* القائمة العلوية المتوازية عرضاً */
+        nav.top-menu {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(0,0,0,0.8);
+        }
+        .nav-item {
+            background: #fff;
+            color: #000;
+            padding: 10px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            min-width: 150px;
+            text-align: center;
+            border: 2px solid var(--gold);
+        }
+        .nav-item:hover {
+            background: var(--gold);
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px var(--glass);
+        }
+
+        /* منطقة المحتوى والجزيئات (الخلايا العصبية) */
+        .main-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* بطاقة المقال الملكية التقنية */
+        .article-card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid var(--gold);
+            border-radius: 15px;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+        .article-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; width: 5px; height: 100%;
+            background: var(--gold);
+        }
+        .article-img {
+            width: 300px;
+            height: 200px;
+            background: #222;
             flex-shrink: 0;
+            border-right: 1px solid var(--gold);
+        }
+        .article-content { padding: 25px; flex-grow: 1; }
+        .article-content h2 { color: var(--gold); margin-top: 0; font-size: 1.5em; }
+
+        /* أزرار المشاركة داخل كل مقال */
+        .share-row {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .share-btn {
+            background: var(--glass);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            cursor: pointer;
         }
 
-        .nav-item { 
-            background: #fff; 
-            width: 100%; 
-            padding: 12px; 
-            margin-bottom: 10px; 
-            border-radius: 25px 0 0 25px; 
-            text-align: center; 
-            font-weight: bold; 
-            border: 2px solid #000; 
-            text-decoration: none; 
-            color: #000; 
-            transition: 0.3s; 
+        /* الأزرار العائمة (الإضاءة والرجوع) */
+        .floating-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1001;
         }
-        .nav-item:hover { background: #eee; transform: scale(1.02); }
-
-        /* Main Content */
-        main { 
-            flex: 1; 
-            background: var(--main-bg); 
-            border: 5px solid #000; 
-            border-radius: 10px; 
-            padding: 20px; 
+        .float-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--black);
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
+        .float-btn:hover { background: var(--gold); color: #000; }
 
-        .main-header { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 20px; }
-        .logo-box { flex: 1; min-width: 200px; border: 3px solid #000; padding: 40px; text-align: center; font-size: 1.5em; font-weight: bold; background: rgba(0,0,0,0.05); }
-        
-        .article-box { border: 3px solid #000; padding: 15px; margin-bottom: 15px; display: flex; gap: 15px; align-items: center; background: rgba(255,255,255,0.1); }
-        .article-img { width: 100px; height: 80px; border: 2px solid #000; background: #eee; flex-shrink: 0; }
-
-        .social-icons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 15px 0; }
-        .social-icons a { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #000; color: white; text-decoration: none; font-size: 12px; font-weight: bold; }
-
-        .footer-links a { display: block; text-decoration: none; color: #000; font-size: 0.85em; margin: 8px 0; font-weight: bold; text-align: center; }
-
-        .controls { display: flex; justify-content: space-around; width: 100%; margin-top: auto; padding-top: 15px; border-top: 2px solid #000; }
-        .btn-action { cursor: pointer; text-align: center; border: none; background: none; font-weight: bold; }
-
-        .arrow-container { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
-        .arrow { width: 0; height: 0; border-top: 10px solid transparent; border-bottom: 10px solid transparent; cursor: pointer; transition: 0.2s; }
-        .arrow-left { border-right: 20px solid #000; }
-        .arrow-right { border-left: 20px solid #000; }
-        .arrow:hover { opacity: 0.7; }
-
-        /* --- Media Queries (للجوال والتابلت) --- */
-        @media (max-width: 992px) { /* للتابلت */
-            .wrapper { flex-direction: column; }
-            aside { width: 100%; height: auto; }
-            .nav-item { border-radius: 25px; }
+        /* تذييل الصفحة الثابت */
+        footer {
+            background: #000;
+            padding: 40px 20px;
+            border-top: 1px solid var(--gold);
+            text-align: center;
         }
+        .social-footer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .social-footer a { color: var(--gold); font-size: 1.5em; text-decoration: none; }
 
-        @media (max-width: 600px) { /* للجوال */
-            .main-header { flex-direction: column; }
-            .article-box { flex-direction: column; text-align: center; }
-            .article-img { width: 100%; height: 150px; }
+        /* دعم الجوال */
+        @media (max-width: 768px) {
+            .article-card { flex-direction: column; }
+            .article-img { width: 100%; height: 200px; }
+            .nav-item { min-width: 45%; }
         }
     </style>
 </head>
 <body>
 
+<div id="progress-container"><div id="progress-bar"></div></div>
+
 <header>
     <h1>ALSHANFRICC</h1>
 </header>
 
-<div class="wrapper">
-    <aside>
-        <a href="index.html" class="nav-item">Home</a>
-        <a href="#" class="nav-item">Narrative Eng.</a>
-        <a href="#" class="nav-item">Mystery Eng.</a>
-        <a href="#" class="nav-item">Investment Arch.</a>
-        <a href="#" class="nav-item">Business Intel</a>
+<nav class="top-menu">
+    <a href="index.html" class="nav-item">Home</a>
+    <a href="#" class="nav-item">Narrative Eng.</a>
+    <a href="#" class="nav-item">Mystery Eng.</a>
+    <a href="#" class="nav-item">Investment Arch.</a>
+    <a href="#" class="nav-item">Business Intel</a>
+</nav>
 
-        <div class="social-icons">
-            <a href="https://x.com" style="background:#000;">X</a>
-            <a href="https://wa.me/966592772436" style="background:#25D366;">WA</a>
-            <a href="https://t.me" style="background:#0088cc;">TG</a>
-            <a href="https://facebook.com" style="background:#4267B2;">FB</a>
-        </div>
-
-        <div class="footer-links">
-            <a href="about.html">About Us</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="copyright.html">Copyrights</a>
-        </div>
-
-        <div class="controls">
-            <div class="btn-action" onclick="alert('Light mode toggled')">💡<br><small>Light</small></div>
-            <div class="btn-action" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">▲<br><small>Top</small></div>
-        </div>
-
-        <div class="arrow-container">
-            <div class="arrow arrow-left" onclick="alert('Previous Post')"></div>
-            <span style="font-size:0.8em; font-weight:bold;">Post No.</span>
-            <div class="arrow arrow-right" onclick="alert('Next Post')"></div>
-        </div>
-    </aside>
-
-    <main>
-        <div class="main-header">
-            <div class="logo-box">ALSHANFRICC Logo</div>
-            <div style="flex: 1; min-width: 200px;">
-                <h3 style="margin-top:0; background:#fff; display:inline-block; padding:2px 10px; border-radius:15px; border: 1px solid #000;">Latest Posts</h3>
-                <ul style="list-style:none; padding:0; font-size:0.9em; line-height:1.6;">
-                    <li>• Mystery Engineering Secrets</li>
-                    <li>• Investment Reports 2026</li>
-                    <li>• Business Intelligence Trends</li>
-                </ul>
+<div class="main-container" id="articles-wrapper">
+    <div class="article-card">
+        <div class="article-img" style="background-image: url('https://via.placeholder.com/300x200'); background-size: cover;"></div>
+        <div class="article-content">
+            <h2>The Neural Logic of Investment</h2>
+            <p>Exploring the intersection of cognitive patterns and market fluctuations in the 2026 digital economy.</p>
+            <div class="share-row">
+                <button class="share-btn" onclick="copyUrl()">Copy Link</button>
+                <button class="share-btn" onclick="shareX()">Share on X</button>
             </div>
         </div>
+    </div>
+    </div>
 
-        <div class="article-box">
-            <div class="article-img"></div>
-            <div>
-                <h3 style="margin: 0;">The Future of Narrative... <a href="#" style="color: #000; font-size: 0.8em;">Read More</a></h3>
-                <p style="font-size:0.85em; margin-top: 5px;">Analysis of strategic digital identities in the 2026 market...</p>
-            </div>
-        </div>
-        
-        <div class="article-box">
-            <div class="article-img"></div>
-            <div>
-                <h3 style="margin: 0;">Market Intelligence... <a href="#" style="color: #000; font-size: 0.8em;">Read More</a></h3>
-                <p style="font-size:0.85em; margin-top: 5px;">How to structure your investment architecture correctly...</p>
-            </div>
-        </div>
-    </main>
+<div class="floating-controls">
+    <div class="float-btn" onclick="toggleMode()" title="Toggle Moon/Sun Mode">🌙</div>
+    <div class="float-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Scroll to Top">▲</div>
 </div>
+
+<footer>
+    <div class="social-footer">
+        <a href="#">𝕏</a>
+        <a href="#">WA</a>
+        <a href="#">TG</a>
+        <a href="#">FB</a>
+    </div>
+    <div style="font-size: 0.9em; color: var(--gold);">
+        <a href="about.html" style="color: inherit; margin: 0 10px;">About Us</a> | 
+        <a href="privacy.html" style="color: inherit; margin: 0 10px;">Privacy Policy</a> | 
+        <a href="copyright.html" style="color: inherit; margin: 0 10px;">Copyrights</a>
+    </div>
+    <p style="margin-top: 20px; opacity: 0.5;">&copy; 2026 ALSHANFRICC. All Rights Reserved.</p>
+</footer>
+
+<script>
+    // تحديث خط التقدم
+    window.onscroll = function() {
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        let scrolled = (winScroll / height) * 100;
+        document.getElementById("progress-bar").style.width = scrolled + "%";
+    };
+
+    // وضع الإضاءة (القمر)
+    function toggleMode() {
+        document.body.style.filter = document.body.style.filter === 'invert(1)' ? 'invert(0)' : 'invert(1)';
+    }
+
+    // وظيفة النسخ
+    function copyUrl() {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Link Copied!");
+    }
+
+    // منع إعادة التحميل وفقدان الذاكرة (Service Worker Cache Logic can be added later)
+</script>
 
 </body>
 </html>
