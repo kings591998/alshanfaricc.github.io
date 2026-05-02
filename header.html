@@ -1,65 +1,25 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-:root{--gold:#D4AF37;--cyan:#00f2ff}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:transparent;pointer-events:none}
-.header{
-  position:fixed;top:0;left:0;right:0;height:72px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 14px;background:linear-gradient(180deg,rgba(5,5,5,.96),rgba(5,5,5,.75));
-  backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,175,55,.25);z-index:9999;pointer-events:auto
-}
-.brand{font-size:clamp(13px,3.5vw,17px);letter-spacing:2.5px;color:var(--gold);font-weight:300;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw;flex-shrink:0}
-.icons{display:flex;gap:10px;align-items:center;flex-shrink:0}
-.icon{width:44px;height:44px;min-width:44px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.35);border:1px solid rgba(212,175,55,.45);color:var(--gold);cursor:pointer;transition:.25s;font-size:18px;user-select:none}
-.icon:active{transform:scale(.94)}
-.icon:hover{box-shadow:0 0 14px var(--cyan);border-color:var(--cyan);color:var(--cyan)}
-.dropdown{
-  position:absolute;top:78px;right:14px;background:rgba(8,8,8,.98);border:1px solid rgba(212,175,55,.3);
-  border-radius:16px;padding:8px;min-width:240px;display:none;z-index:10000;box-shadow:0 12px 40px rgba(0,242,255,.18);pointer-events:auto
-}
-.dropdown.show{display:block;animation:fade.18s ease}
-@keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1}}
-.dropdown a{display:flex;align-items:center;gap:14px;padding:14px 16px;color:#eee;text-decoration:none;border-radius:12px;font-size:15px}
-.dropdown a:hover{background:rgba(212,175,55,.12);color:var(--gold)}
-.dropdown a span{width:24px;text-align:center;color:var(--cyan)}
-@media(max-width:380px){.icons{gap:6px}.icon{width:40px;height:40px;min-width:40px}}
+.al-header{height:84px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:linear-gradient(180deg,rgba(5,5,5,.98),rgba(5,5,5,.8));backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,175,55,.3)}
+.brand{font-size:clamp(20px,5vw,28px);letter-spacing:3px;color:#D4AF37;font-weight:300}
+.icons{display:flex;gap:12px}
+.icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.4);border:1px solid rgba(212,175,55,.5);color:#D4AF37;font-size:20px;cursor:pointer;touch-action:manipulation}
+.dropdown{position:absolute;top:90px;right:18px;background:rgba(8,8,8,.98);border:1px solid rgba(212,175,55,.35);border-radius:16px;padding:8px;min-width:250px;display:none;z-index:2000}
+.dropdown.show{display:block}
+.dropdown a{display:block;padding:14px;color:#eee;text-decoration:none;border-radius:10px}
+.dropdown a:hover{background:rgba(212,175,55,.12);color:#D4AF37}
 </style>
-</head>
-<body>
-<div class="header">
-  <div class="brand">ALSHANFRICC</div>
+<header class="al-header">
   <div class="icons">
-    <div class="icon" id="back" title="الرجوع">⟲</div>
-    <div class="icon" id="light" title="الإضاءة">◐</div>
-    <div class="icon" id="tabs" title="التبويبات">≡</div>
-    <div class="icon" id="contact" title="التواصل">✉</div>
-    <div class="icon" id="search" title="البحث">⌕</div>
+    <button class="icon" id="search">⌕</button>
+    <button class="icon" id="contact">⚡</button>
+    <button class="icon" id="tabs">⟐</button>
+    <button class="icon" id="light">◐</button>
   </div>
+  <div class="brand">ALSHANFRICC</div>
   <div class="dropdown" id="menu">
-    <a href="#" data-page="هندسة السرد"><span>◈</span> هندسة السرد</a>
-    <a href="#" data-page="عمارة الاستثمار"><span>⬙</span> عمارة الاستثمار</a>
-    <a href="#" data-page="الأنظمة الذكية"><span>⟐</span> الأنظمة الذكية</a>
-    <a href="#" data-page="البيانات"><span>⟁</span> البيانات</a>
+    <a href="#" data-page="هندسة السرد">هندسة السرد</a>
+    <a href="#" data-page="عمارة الاستثمار">عمارة الاستثمار</a>
+    <a href="#" data-page="الأنظمة الذكية">الأنظمة الذكية</a>
+    <a href="#" data-page="البيانات">البيانات</a>
   </div>
-</div>
-<script>
-let light=false;
-const menu=document.getElementById('menu');
-document.getElementById('tabs').onclick=()=>menu.classList.toggle('show');
-document.getElementById('light').onclick=()=>{
-  light=!light;
-  parent.postMessage({type:'theme',mode:light?'light':'dark'},'*');
-  document.getElementById('light').style.color=light?'#00f2ff':'#D4AF37';
-};
-document.getElementById('back').onclick=()=>parent.history.back();
-document.getElementById('contact').onclick=()=>parent.postMessage({type:'navigate',page:'التواصل'},'*');
-document.getElementById('search').onclick=()=>parent.postMessage({type:'navigate',page:'البحث'},'*');
-menu.querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();parent.postMessage({type:'navigate',page:a.dataset.page},'*');menu.classList.remove('show')});
-addEventListener('click',e=>{if(!e.target.closest('.icon')&&!e.target.closest('#menu'))menu.classList.remove('show')});
-</script>
-</body>
-</html>
+</header>
