@@ -3,77 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALSHANFRICC | Core</title>
+    <title>ALSHANFRICC | Core System</title>
     <style>
-        :root { --black: #050505; }
-        body { background: var(--black); margin: 0; padding: 0; overflow-x: hidden; }
-        #neural-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.3; pointer-events: none; }
-        
-        /* تثبيت الهيدر في أعلى الشاشة */
-        .fixed-header-container {
+        :root { 
+            --black: #050505; 
+            --gold: #D4AF37;
+        }
+
+        body { 
+            background: var(--black); 
+            margin: 0; 
+            padding: 0; 
+            overflow-x: hidden; 
+            transition: filter 0.5s ease; /* لسلاسة زر الإضاءة */
+        }
+
+        /* خلفية الشبكة العصبية */
+        #neural-canvas { 
+            position: fixed; 
+            inset: 0; 
+            z-index: -1; 
+            opacity: 0.3; 
+            pointer-events: none; 
+        }
+
+        /* حاوية الهيدر المثبتة */
+        .header-fixed {
             position: fixed;
             top: 0;
             width: 100%;
-            height: 120px;
+            height: 70px; /* ارتفاع الهيدر المرئي */
             z-index: 1000;
             background: rgba(5, 5, 5, 0.9);
             backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            overflow: visible; /* هام جداً لظهور التبويبات */
         }
 
-        .content-body {
-            margin-top: 120px; /* مساحة لكي لا يختفي المحتوى تحت الهيدر */
+        /* إطار الهيدر */
+        .header-frame {
             width: 100%;
+            height: 450px; /* ارتفاع كبير للسماح للقوائم بالنزول لأسفل */
+            border: none;
+            overflow: visible;
         }
-        
-        iframe { width: 100%; border: none; display: block; background: transparent; }
+
+        /* حاوية المحتوى الرئيسي */
+        .main-content {
+            margin-top: 75px; /* لضمان عدم اختفاء المحتوى خلف الهيدر الثابت */
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .module-iframe {
+            width: 100%;
+            border: none;
+            display: block;
+            background: transparent;
+        }
+
+        /* وضع الإضاءة (يتم التحكم به من الهيدر) */
+        .light-theme {
+            filter: invert(100%) hue-rotate(180deg);
+        }
     </style>
 </head>
 <body>
+
 <canvas id="neural-canvas"></canvas>
 
-<div class="fixed-header-container">
-    <iframe src="header.html" style="height: 100%;" scrolling="no"></iframe>
+<div class="header-fixed">
+    <iframe src="header.html" class="header-frame" scrolling="no"></iframe>
 </div>
 
-<div class="content-body">
-    <iframe src="articles.html" style="height: 2500px;" scrolling="no"></iframe>
+<div class="main-content">
+    <iframe src="articles.html" id="contentFrame" class="module-iframe" scrolling="no"></iframe>
 </div>
 
 <script>
+    // جافا سكريبت لتعديل ارتفاع الإطار تلقائياً حسب المحتوى
+    window.addEventListener('message', function(e) {
+        if (e.data.type === 'setHeight') {
+            document.getElementById('contentFrame').style.height = e.data.height + 'px';
+        }
+    }, false);
+
+    // كود الشبكة العصبية الخلفية
     const canvas = document.getElementById('neural-canvas');
     const ctx = canvas.getContext('2d');
     let pts = [];
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    window.onresize = resize; resize();
-    class P {
+
+    function resize() { 
+        canvas.width = window.innerWidth; 
+        canvas.height = window.innerHeight; 
+    }
+    window.onresize = resize; 
+    resize();
+
+    class Particle {
         constructor() {
-            this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height;
-            this.vx=(Math.random()-0.5)*0.2; this.vy=(Math.random()-0.5)*0.2;
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.vx = (Math.random() - 0.5) * 0.2;
+            this.vy = (Math.random() - 0.5) * 0.2;
         }
         update() {
-            this.x+=this.vx; this.y+=this.vy;
-            if(this.x<0||this.x>canvas.width)this.vx*=-1;
-            if(this.y<0||this.y>canvas.height)this.vy*=-1;
+            this.x += this.vx;
+            this.y += this.vy;
+            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
         }
     }
-    for(let i=0; i<35; i++) pts.push(new P());
-    function anim() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.strokeStyle="rgba(212,175,55,0.1)";
-        pts.forEach((p,i)=>{
+
+    for (let i = 0; i < 40; i++) pts.push(new Particle());
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = "rgba(212, 175, 55, 0.15)";
+        ctx.lineWidth = 0.5;
+        pts.forEach((p, i) => {
             p.update();
-            for(let j=i+1; j<pts.length; j++){
-                let d=Math.hypot(p.x-pts[j].x, p.y-pts[j].y);
-                if(d<150){
-                    ctx.globalAlpha=1-(d/150);
-                    ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke();
+            for (let j = i + 1; j < pts.length; j++) {
+                let d = Math.hypot(p.x - pts[j].x, p.y - pts[j].y);
+                if (d < 150) {
+                    ctx.globalAlpha = 1 - (d / 150);
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(pts[j].x, pts[j].y);
+                    ctx.stroke();
                 }
             }
         });
-        requestAnimationFrame(anim);
+        requestAnimationFrame(animate);
     }
-    anim();
+    animate();
 </script>
+
 </body>
 </html>
