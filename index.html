@@ -6,37 +6,85 @@
     <title>ALSHANFRICC | Official Platform</title>
     <style>
         :root { --gold: #D4AF37; --black: #000; --sidebar-bg: #D4AF37; --main-bg: #D4AF37; }
-        body { background-color: var(--black); color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 10px; }
+        
+        * { box-sizing: border-box; }
+        body { background-color: var(--black); color: #000; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         
         header { background: var(--black); text-align: center; padding: 20px; border-bottom: 5px solid red; margin-bottom: 10px; }
-        header h1 { color: var(--gold); margin: 0; font-size: 2.5em; letter-spacing: 3px; }
+        header h1 { color: var(--gold); margin: 0; font-size: clamp(1.5em, 5vw, 2.5em); letter-spacing: 3px; }
 
-        .wrapper { display: grid; grid-template-columns: 220px 1fr; gap: 10px; min-height: 90vh; }
+        /* Layout Container */
+        .wrapper { display: flex; gap: 10px; max-width: 1400px; margin: auto; flex-direction: row; }
 
-        /* Sidebar Design */
-        aside { background: var(--sidebar-bg); border: 5px solid #000; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        .nav-item { background: #fff; width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 25px 0 0 25px; text-align: center; font-weight: bold; border: 2px solid #000; text-decoration: none; color: #000; transition: 0.3s; }
-        .nav-item:hover { background: #eee; transform: translateX(5px); }
+        /* Sidebar - يتغير مكانه حسب الشاشة */
+        aside { 
+            width: 250px; 
+            background: var(--sidebar-bg); 
+            border: 5px solid #000; 
+            border-radius: 10px; 
+            padding: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            flex-shrink: 0;
+        }
 
-        .social-icons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; }
-        .social-icons a { width: 35px; height: 35px; border-radius: 50%; display: block; border: 2px solid #000; }
+        .nav-item { 
+            background: #fff; 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 10px; 
+            border-radius: 25px 0 0 25px; 
+            text-align: center; 
+            font-weight: bold; 
+            border: 2px solid #000; 
+            text-decoration: none; 
+            color: #000; 
+            transition: 0.3s; 
+        }
+        .nav-item:hover { background: #eee; transform: scale(1.02); }
 
-        /* Main Content Design */
-        main { background: var(--main-bg); border: 5px solid #000; border-radius: 10px; padding: 20px; }
-        .main-header { display: grid; grid-template-columns: 1.5fr 1fr; gap: 15px; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 20px; }
-        .logo-box { border: 3px solid #000; padding: 40px; text-align: center; font-size: 1.8em; font-weight: bold; background: rgba(0,0,0,0.05); }
+        /* Main Content */
+        main { 
+            flex: 1; 
+            background: var(--main-bg); 
+            border: 5px solid #000; 
+            border-radius: 10px; 
+            padding: 20px; 
+        }
+
+        .main-header { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 20px; }
+        .logo-box { flex: 1; min-width: 200px; border: 3px solid #000; padding: 40px; text-align: center; font-size: 1.5em; font-weight: bold; background: rgba(0,0,0,0.05); }
         
         .article-box { border: 3px solid #000; padding: 15px; margin-bottom: 15px; display: flex; gap: 15px; align-items: center; background: rgba(255,255,255,0.1); }
-        .article-img { width: 120px; height: 100px; border: 2px solid #000; background: #eee; }
+        .article-img { width: 100px; height: 80px; border: 2px solid #000; background: #eee; flex-shrink: 0; }
 
-        .footer-links a { display: block; text-decoration: none; color: #000; font-size: 0.85em; margin: 5px 0; font-weight: bold; }
-        
-        .controls { display: flex; justify-content: space-between; width: 100%; margin-top: auto; padding-top: 15px; border-top: 2px solid #000; }
-        .arrow { width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; cursor: pointer; }
-        .arrow-left { border-right: 25px solid #000; }
-        .arrow-right { border-left: 25px solid #000; }
+        .social-icons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 15px 0; }
+        .social-icons a { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #000; color: white; text-decoration: none; font-size: 12px; font-weight: bold; }
 
-        @media (max-width: 768px) { .wrapper { grid-template-columns: 1fr; } }
+        .footer-links a { display: block; text-decoration: none; color: #000; font-size: 0.85em; margin: 8px 0; font-weight: bold; text-align: center; }
+
+        .controls { display: flex; justify-content: space-around; width: 100%; margin-top: auto; padding-top: 15px; border-top: 2px solid #000; }
+        .btn-action { cursor: pointer; text-align: center; border: none; background: none; font-weight: bold; }
+
+        .arrow-container { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
+        .arrow { width: 0; height: 0; border-top: 10px solid transparent; border-bottom: 10px solid transparent; cursor: pointer; transition: 0.2s; }
+        .arrow-left { border-right: 20px solid #000; }
+        .arrow-right { border-left: 20px solid #000; }
+        .arrow:hover { opacity: 0.7; }
+
+        /* --- Media Queries (للجوال والتابلت) --- */
+        @media (max-width: 992px) { /* للتابلت */
+            .wrapper { flex-direction: column; }
+            aside { width: 100%; height: auto; }
+            .nav-item { border-radius: 25px; }
+        }
+
+        @media (max-width: 600px) { /* للجوال */
+            .main-header { flex-direction: column; }
+            .article-box { flex-direction: column; text-align: center; }
+            .article-img { width: 100%; height: 150px; }
+        }
     </style>
 </head>
 <body>
@@ -54,7 +102,11 @@
         <a href="#" class="nav-item">Business Intel</a>
 
         <div class="social-icons">
-            <a href="#" style="background:#1DA1F2;"></a> <a href="#" style="background:#25D366;"></a> <a href="#" style="background:#0088cc;"></a> <a href="#" style="background:#4267B2;"></a> </div>
+            <a href="https://x.com" style="background:#000;">X</a>
+            <a href="https://wa.me/966592772436" style="background:#25D366;">WA</a>
+            <a href="https://t.me" style="background:#0088cc;">TG</a>
+            <a href="https://facebook.com" style="background:#4267B2;">FB</a>
+        </div>
 
         <div class="footer-links">
             <a href="about.html">About Us</a>
@@ -63,22 +115,22 @@
         </div>
 
         <div class="controls">
-            <div style="text-align:center;">💡<br><small>Light</small></div>
-            <div style="text-align:center;">▲<br><small>Top</small></div>
+            <div class="btn-action" onclick="alert('Light mode toggled')">💡<br><small>Light</small></div>
+            <div class="btn-action" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">▲<br><small>Top</small></div>
         </div>
 
-        <div style="display:flex; align-items:center; gap:10px; margin-top:15px;">
-            <div class="arrow arrow-left"></div>
+        <div class="arrow-container">
+            <div class="arrow arrow-left" onclick="alert('Previous Post')"></div>
             <span style="font-size:0.8em; font-weight:bold;">Post No.</span>
-            <div class="arrow arrow-right"></div>
+            <div class="arrow arrow-right" onclick="alert('Next Post')"></div>
         </div>
     </aside>
 
     <main>
         <div class="main-header">
             <div class="logo-box">ALSHANFRICC Logo</div>
-            <div>
-                <h3 style="margin-top:0; background:#fff; display:inline-block; padding:2px 10px; border-radius:15px;">Latest Posts</h3>
+            <div style="flex: 1; min-width: 200px;">
+                <h3 style="margin-top:0; background:#fff; display:inline-block; padding:2px 10px; border-radius:15px; border: 1px solid #000;">Latest Posts</h3>
                 <ul style="list-style:none; padding:0; font-size:0.9em; line-height:1.6;">
                     <li>• Mystery Engineering Secrets</li>
                     <li>• Investment Reports 2026</li>
@@ -90,8 +142,16 @@
         <div class="article-box">
             <div class="article-img"></div>
             <div>
-                <h3>Title of the First Article... More</h3>
-                <p style="font-size:0.8em;">Brief summary of the narrative content of the article and what will be discussed here...</p>
+                <h3 style="margin: 0;">The Future of Narrative... <a href="#" style="color: #000; font-size: 0.8em;">Read More</a></h3>
+                <p style="font-size:0.85em; margin-top: 5px;">Analysis of strategic digital identities in the 2026 market...</p>
+            </div>
+        </div>
+        
+        <div class="article-box">
+            <div class="article-img"></div>
+            <div>
+                <h3 style="margin: 0;">Market Intelligence... <a href="#" style="color: #000; font-size: 0.8em;">Read More</a></h3>
+                <p style="font-size:0.85em; margin-top: 5px;">How to structure your investment architecture correctly...</p>
             </div>
         </div>
     </main>
