@@ -32,38 +32,46 @@
 <iframe src="footer.html" class="module-frame" style="height: 200px;"></iframe>
 
 <script>
-    // الحيلة: حماية النزاهة (Level 3)
-    setInterval(function() {
-        const devtools = /./;
-        devtools.toString = function() {
-            document.body.style.filter = "invert(1) sepia(1) saturate(5)";
-            alert("SECURITY BREACH: System Integrity Compromised.");
-        };
-        console.log(devtools);
-    }, 1000);
+    // حماية صامتة (بدون رسائل مزعجة)
+    document.addEventListener('contextmenu', event => event.preventDefault());
 
-    // الشبكة العصبية مع حيلة تتبع الماوس (Level 4)
+    // حيلة 2 (L5): تتبع الزيارات والولاء
+    let visits = localStorage.getItem('visitCount') || 0;
+    localStorage.setItem('visitCount', ++visits);
+    if(visits > 5) document.body.style.boxShadow = "inset 0 0 100px rgba(212,175,55,0.2)";
+
+    // الشبكة العصبية مع حيلة 3 (L5): البصمة الحرارية للماوس
     const canvas = document.getElementById('neural-canvas');
     const ctx = canvas.getContext('2d');
     let pts = [];
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.onresize = resize; resize();
+
     class P {
-        constructor(x,y) { this.x=x||Math.random()*canvas.width; this.y=y||Math.random()*canvas.height; this.vx=(Math.random()-0.5)*0.2; this.vy=(Math.random()-0.5)*0.2; this.life=undefined; }
-        update() { this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
+        constructor(x,y,isMouse=false) { 
+            this.x=x||Math.random()*canvas.width; 
+            this.y=y||Math.random()*canvas.height; 
+            this.vx=(Math.random()-0.5)*0.2; 
+            this.vy=(Math.random()-0.5)*0.2; 
+            this.life = isMouse ? 100 : undefined;
+        }
+        update() { 
+            this.x+=this.vx; this.y+=this.vy; 
+            if(this.x<0||this.x>canvas.width)this.vx*=-1; 
+            if(this.y<0||this.y>canvas.height)this.vy*=-1; 
+        }
     }
-    for(let i=0; i<60; i++) pts.push(new P());
+    for(let i=0; i<50; i++) pts.push(new P());
 
     window.addEventListener('mousemove', (e) => {
-        pts.push(new P(e.clientX, e.clientY)); // البصمة الحرارية للماوس
-        pts[pts.length-1].life = 100;
+        pts.push(new P(e.clientX, e.clientY, true)); // أثر الماوس الذهبي
         pts.forEach(p => { p.vx += (e.clientX - canvas.width/2) * 0.000005; });
     });
 
     function anim() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.strokeStyle = "rgba(212,175,55,0.1)"; ctx.fillStyle = "rgba(212,175,55,0.4)";
-        pts = pts.filter(p => (p.life === undefined || p.life-- > 0));
+        pts = pts.filter(p => p.life === undefined || p.life-- > 0);
         pts.forEach((p,i)=>{
             p.update(); ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI*2); ctx.fill();
             for(let j=i+1; j<pts.length; j++) {
@@ -75,7 +83,13 @@
     }
     anim();
 
-    window.addEventListener('load', () => setTimeout(()=> document.getElementById('loader').style.display='none', 1800));
+    window.onscroll = () => {
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        document.getElementById("scroll-pct").innerText = Math.round((winScroll / height) * 100) + "% DECODED";
+    };
+
+    window.addEventListener('load', () => setTimeout(()=> document.getElementById('loader').style.display='none', 1500));
 </script>
 </body>
 </html>
