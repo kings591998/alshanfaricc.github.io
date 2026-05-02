@@ -1,140 +1,53 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { --gold: #D4AF37; --cyan: #00f2ff; --bg: #050505; }
-        body { background: transparent; margin: 0; padding: 10px 15px; font-family: sans-serif; overflow: visible; }
-
-        .header-grid {
-            display: flex;
-            justify-content: space-between; /* اسم يسار وأيقونات يمين */
-            align-items: center;
-            width: 100%;
-        }
-
-        /* الاسم (أقصى اليسار) */
-        .brand-left h1 { 
-            font-size: 1rem; 
-            color: var(--gold); 
-            letter-spacing: 2px; 
-            margin: 0; 
-            font-weight: 900;
-        }
-
-        /* حاوية الأيقونات (أقصى اليمين) */
-        .icon-tray-right {
-            display: flex;
-            gap: 8px; /* مسافة بين الأيقونات */
-        }
-
-        .node { position: relative; }
-
-        /* الأيقونات الدائرية */
-        .btn-core {
-            width: 36px; height: 36px;
-            border: 1px solid rgba(212,175,55,0.3); border-radius: 50%;
-            background: #000; color: var(--gold);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.3s; font-size: 0.8rem;
-        }
-        .btn-core:hover { border-color: var(--gold); box-shadow: 0 0 10px var(--gold); }
-
-        /* القائمة المنسدلة المحدثة */
-        .branch-menu {
-            position: absolute;
-            top: 45px;
-            right: 0;
-            width: 160px;
-            background: rgba(10,10,10,0.98);
-            border: 1px solid var(--gold);
-            border-radius: 8px;
-            display: none;
-            flex-direction: column;
-            z-index: 9999; /* تظهر فوق البدي */
-            box-shadow: 0 10px 25px rgba(0,0,0,0.9);
-        }
-
-        .node:hover .branch-menu { display: flex; }
-
-        /* روابط التبويبات منفصلة ومرتبة */
-        .link-node {
-            color: var(--gold);
-            text-decoration: none;
-            font-size: 11px;
-            padding: 12px;
-            border-bottom: 1px solid rgba(212,175,55,0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .link-node:last-child { border: none; }
-        .link-node:hover { background: rgba(212,175,55,0.1); color: #fff; }
-
-        /* حقل البحث */
-        .search-box {
-            background: transparent; border: none; border-bottom: 1px solid var(--gold);
-            color: var(--gold); width: 90%; outline: none; font-size: 10px; padding: 5px; margin: 5px auto;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--gold:#D4AF37;--cyan:#00f2ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:transparent}
+.header{position:fixed;top:0;left:0;right:0;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:linear-gradient(180deg,rgba(5,5,5,.96),rgba(5,5,5,.75));backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,175,55,.25);z-index:9999}
+.brand{font-size:clamp(13px,3.5vw,17px);letter-spacing:2.5px;color:var(--gold);font-weight:300;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw;flex-shrink:0}
+.icons{display:flex;gap:10px;align-items:center;flex-shrink:0}
+.icon{width:44px;height:44px;min-width:44px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.35);border:1px solid rgba(212,175,55,.45);color:var(--gold);cursor:pointer;transition:.25s;font-size:18px;user-select:none}
+.icon:active{transform:scale(.94)}
+.icon:hover{box-shadow:0 0 14px var(--cyan);border-color:var(--cyan);color:var(--cyan)}
+.dropdown{position:absolute;top:78px;right:14px;background:rgba(8,8,8,.98);border:1px solid rgba(212,175,55,.3);border-radius:16px;padding:8px;min-width:240px;display:none;z-index:10000;box-shadow:0 12px 40px rgba(0,242,255,.18)}
+.dropdown.show{display:block;animation:fade .2s}
+@keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1}}
+.dropdown a{display:flex;align-items:center;gap:14px;padding:14px 16px;color:#eee;text-decoration:none;border-radius:12px;font-size:15px}
+.dropdown a:hover{background:rgba(212,175,55,.12);color:var(--gold)}
+.dropdown a span{width:24px;text-align:center;color:var(--cyan)}
+@media(max-width:380px){.icons{gap:6px}.icon{width:40px;height:40px;min-width:40px}}
+</style>
 </head>
 <body>
-
-<div class="header-grid">
-    
-    <div class="brand-left">
-        <h1>ALSHANFRICC</h1>
-    </div>
-
-    <div class="icon-tray-right">
-        
-        <div class="node">
-            <div class="btn-core" onclick="window.history.back()"><i class="fas fa-chevron-right"></i></div>
-        </div>
-
-        <div class="node">
-            <div class="btn-core" onclick="toggleLight()"><i class="fas fa-lightbulb"></i></div>
-        </div>
-
-        <div class="node">
-            <div class="btn-core"><i class="fas fa-sitemap"></i></div>
-            <div class="branch-menu">
-                <a href="#" class="link-node"><i class="fas fa-pen-nib"></i> هندسة السرد</a>
-                <a href="#" class="link-node"><i class="fas fa-chart-line"></i> عمارة الاستثمار</a>
-                <a href="#" class="link-node"><i class="fas fa-robot"></i> الأنظمة الذكية</a>
-                <a href="#" class="link-node"><i class="fas fa-database"></i> قواعد البيانات</a>
-            </div>
-        </div>
-
-        <div class="node">
-            <div class="btn-core" style="color:var(--cyan);"><i class="fas fa-bolt"></i></div>
-            <div class="branch-menu">
-                <a href="#" class="link-node"><i class="fab fa-telegram"></i> Telegram</a>
-                <a href="#" class="link-node"><i class="fab fa-linkedin"></i> LinkedIn</a>
-            </div>
-        </div>
-
-        <div class="node">
-            <div class="btn-core"><i class="fas fa-search"></i></div>
-            <div class="branch-menu" style="width: 200px;">
-                <input type="text" class="search-box" placeholder="ابحث في النواة...">
-            </div>
-        </div>
-
-    </div>
+<div class="header">
+  <div class="brand">ALSHANFRICC</div>
+  <div class="icons">
+    <div class="icon" id="back" title="الرجوع">⟲</div>
+    <div class="icon" id="light" title="الإضاءة">◐</div>
+    <div class="icon" id="tabs" title="التبويبات">≡</div>
+    <div class="icon" id="contact" title="التواصل">✉</div>
+    <div class="icon" id="search" title="البحث">⌕</div>
+  </div>
+  <div class="dropdown" id="menu">
+    <a href="#" data-page="هندسة السرد"><span>◈</span> هندسة السرد</a>
+    <a href="#" data-page="عمارة الاستثمار"><span>⬙</span> عمارة الاستثمار</a>
+    <a href="#" data-page="الأنظمة الذكية"><span>⟐</span> الأنظمة الذكية</a>
+    <a href="#" data-page="البيانات"><span>⟁</span> البيانات</a>
+  </div>
 </div>
-
 <script>
-    function toggleLight() {
-        // إرسال طلب للأب (index.html) لتغيير الثيم
-        const body = window.parent.document.body;
-        if (body.style.filter === "invert(100%)") {
-            body.style.filter = "invert(0%)";
-        } else {
-            body.style.filter = "invert(100%)";
-        }
-    }
+let light=false,menu=document.getElementById('menu');
+function resize(){const h=menu.classList.contains('show')?72+menu.offsetHeight+20:72;parent.postMessage({type:'resizeHeader',h},'*')}
+document.getElementById('tabs').onclick=()=>{menu.classList.toggle('show');resize()};
+document.getElementById('light').onclick=()=>{light=!light;parent.postMessage({type:'theme',mode:light?'light':'dark'},'*');document.getElementById('light').style.color=light?'#00f2ff':'#D4AF37'};
+document.getElementById('back').onclick=()=>parent.history.back();
+menu.querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();parent.postMessage({type:'navigate',page:a.dataset.page},'*');menu.classList.remove('show');resize()});
+addEventListener('click',e=>{if(!e.target.closest('.icon')&&!e.target.closest('#menu')&&menu.classList.contains('show')){menu.classList.remove('show');resize()}});
+resize();
 </script>
 </body>
 </html>
