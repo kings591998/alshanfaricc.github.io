@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALSHANFRICC PRO - لوحة التحكم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --bg: #000;
+            --card: #111;
+            --border: #222;
+            --text: #fff;
+            --sidebar-width: 220px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            display: none;
+        }
+
+        body.authorized { display: block; }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .logo { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
+        .top-right { display: flex; align-items: center; gap: 20px; }
+        #live-clock { font-family: monospace; color: var(--gold); }
+        .logout-btn { background: #ff4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .logout-btn:hover { opacity: 0.9; }
+
+        .wrapper { display: flex; margin-top: 60px; }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card);
+            height: calc(100vh - 60px);
+            position: fixed;
+            border-left: 1px solid var(--border);
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+            color: #888;
+            border-left: 3px solid transparent;
+            user-select: none;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--gold);
+            border-left-color: var(--gold);
+        }
+
+        .main-content {
+            margin-right: var(--sidebar-width);
+            padding: 30px;
+            width: 100%;
+            overflow-y: auto;
+            max-height: calc(100vh - 60px);
+        }
+
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--card); padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
+        .stat-card h3 { color: #888; font-size: 0.9rem; margin-bottom: 10px; }
+        .stat-card .value { font-size: 2rem; color: var(--gold); font-weight: bold; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: var(--gold); font-weight: bold; }
+        input, textarea, select {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 12px;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-gold { background: var(--gold); color: black; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-gold:hover { opacity: 0.9; }
+        .btn-red { background: #ff4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .btn-small { padding: 6px 12px; font-size: 0.85rem; }
+
+        .ai-tools { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .ai-btn { background: #222; color: var(--gold); border: 1px solid var(--gold); padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
+        .ai-btn:hover { background: var(--gold); color: black; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 15px; text-align: right; border-bottom: 1px solid var(--border); }
+        th { color: var(--gold); background: #1a1a1a; }
+        tr:hover { background: #1a1a1a; }
+
+        .tag { padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; background: rgba(212, 175, 55, 0.2); color: var(--gold); }
+
+        .section-box { background: var(--card); padding: 20px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .section-box h2 { color: var(--gold); margin-bottom: 15px; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; }
+        .status-online { background: #4CAF50; color: white; }
+        .status-offline { background: #f44336; color: white; }
+
+        .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Image Upload Styles */
+        .image-upload-area {
+            border: 2px dashed var(--gold);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .image-upload-area:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .image-upload-area.dragover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: #fff;
+        }
+
+        .uploaded-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .image-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .image-item .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Tabs Styles */
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: #1a1a1a;
+            color: #888;
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--gold);
+            color: black;
+            border-color: var(--gold);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Category Filter */
+        .category-list {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            background: #1a1a1a;
+            color: #888;
+            border: 1px solid var(--border);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-btn.active {
+            background: var(--gold);
+            color: black;
+            border-color: var(--gold);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 60px; }
+            .nav-item span { display: none; }
+            .main-content { margin-right: 60px; }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Anti-Debug Protection -->
+    <script>
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+                (e.ctrlKey && e.shiftKey && e.key === 'C') || (e.ctrlKey && e.shiftKey && e.key === 'J')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+
+    <div class="top-bar">
+        <div class="logo">ALSHANFRICC PRO</div>
+        <div class="top-right">
+            <div id="live-clock">00:00:00</div>
+            <button class="logout-btn" onclick="logout()">خروج</button>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <aside class="sidebar">
+            <div class="nav-item active" onclick="switchSection('dashboard', this)"><i class="fas fa-chart-line"></i> <span>لوحة المعلومات</span></div>
+            <div class="nav-item" onclick="switchSection('publish', this)"><i class="fas fa-pen-nib"></i> <span>النشر</span></div>
+            <div class="nav-item" onclick="switchSection('articles', this)"><i class="fas fa-file-alt"></i> <span>المقالات</span></div>
+            <div class="nav-item" onclick="switchSection('ai', this)"><i class="fas fa-brain"></i> <span>الذكاء الاصطناعي</span></div>
+            <div class="nav-item" onclick="switchSection('telegram', this)"><i class="fab fa-telegram"></i> <span>تلجرام</span></div>
+            <div class="nav-item" onclick="switchSection('categories', this)"><i class="fas fa-tags"></i> <span>المجالات</span></div>
+            <div class="nav-item" onclick="switchSection('analytics', this)"><i class="fas fa-chart-bar"></i> <span>التحليلات</span></div>
+            <div class="nav-item" onclick="switchSection('settings', this)"><i class="fas fa-cog"></i> <span>الإعدادات</span></div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Dashboard -->
+            <section id="dashboard" class="section active">
+                <h1 style="color: var(--gold); margin-bottom: 30px;">لوحة المعلومات</h1>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>عدد المقالات</h3>
+                        <div class="value" id="stat-articles">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>إجمالي المشاهدات</h3>
+                        <div class="value" id="stat-views">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>عدد الصور</h3>
+                        <div class="value" id="stat-images">0</div>
+                    </div>
+                </div>
+
+                <div class="section-box">
+                    <h2>إحصائيات آخر 7 أيام</h2>
+                    <canvas id="statsChart" height="100"></canvas>
+                </div>
+
+                <div class="grid-2">
+                    <div class="section-box">
+                        <h2>آخر 5 مقالات</h2>
+                        <div id="recent-list"></div>
+                    </div>
+                    <div class="section-box">
+                        <h2>الأكثر قراءة</h2>
+                        <div id="top-list"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Publish -->
+            <section id="publish" class="section">
+                <h1 style="color: var(--gold); margin-bottom: 30px;">نشر مقالة جديدة</h1>
+                <div class="section-box">
+                    <div class="form-group">
+                        <label>المجال</label>
+                        <select id="pub-tag">
+                            <option value="">اختر المجال...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>عنوان المقال</label>
+                        <input type="text" id="pub-title" placeholder="أدخل عنوان المقال...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>الوصف المختصر</label>
+                        <textarea id="pub-description" rows="3" placeholder="وصف قصير للمقالة..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>رفع الصور</label>
+                        <div class="image-upload-area" id="uploadArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--gold); margin-bottom: 10px; display: block;"></i>
+                            <p>اسحب الصور هنا أو اضغط للاختيار</p>
+                            <input type="file" id="imageInput" multiple accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+                        </div>
+                        <div class="uploaded-images" id="uploadedImages"></div>
+                    </div>
+
+                    <div class="ai-tools">
+                        <button class="ai-btn" onclick="aiTool('toc')"><i class="fas fa-wand-magic-sparkles"></i> توليد فهرس</button>
+                        <button class="ai-btn" onclick="aiTool('expand')"><i class="fas fa-expand"></i> توسيع النص</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>محتوى المقال</label>
+                        <textarea id="pub-content" rows="12" placeholder="اكتب محتوى المقال هنا..."></textarea>
+                    </div>
+
+                    <button class="btn-gold" onclick="publishArticle()"><i class="fas fa-paper-plane"></i> نشر الآن</button>
+                </div>
+            </section>
+
+            <!-- Articles -->
+            <section id="articles" class="section">
+                <h1 style="color: var(--gold); margin-bottom: 30px;">إدارة المقالات</h1>
+                <div class="section-box">
+                    <div class="form-group">
+                        <input type="text" id="art-search" placeholder="بحث عن مقالة..." oninput="filterArticles()">
+                    </div>
+
+                    <div class="tabs-container" id="categoryTabs"></div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>العنوان</th>
+                                <th>المجال</th>
+                                <th>المشاهدات</th>
+                                <th>الصور</th>
+                                <th>التاريخ</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="articles-body"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- AI Integration -->
+            <section id="ai" class="section">
+                <h1 style="color: var(--gold); margin-bottom: 30px;">الذكاء الاصطناعي</h1>
+                
+                <div class="tabs-container">
+                    <button class="tab-btn active" onclick="switchTab('gpt', this)">ChatGPT</button>
+                    <button class="tab-btn" onclick="switchTab('azure', this)">Azure AI</button>
+                </div>
+
+                <!-- ChatGPT Tab -->
+                <div id="gpt" class="tab-content active">
+                    <div class="section-box">
+                        <h2>توليد محتوى بـ ChatGPT</h2>
+                        <div class="form-group">
+                            <label>الموضوع</label>
+                            <input type="text" id="ai-topic" placeholder="أدخل الموضوع الذي تريد كتابة مقالة عنه...">
+                        </div>
+                        <div class="form-group">
+                            <label>عدد الكلمات</label>
+                            <select id="ai-words">
+                                <option value="300">300 كلمة</option>
+                                <option value="500">500 كلمة</option>
+                                <option value="1000">1000 كلمة</option>
+                            </select>
+                        </div>
+                        <button class="btn-gold" onclick="generateWithAI('gpt')"><i class="fas fa-sparkles"></i> توليد المقالة</button>
+                        <div id="ai-result" style="margin-top: 20px; padding: 15px; background: #1a1a1a; border-radius: 5px; display: none;">
+                            <h3 style="color: var(--gold); margin-bottom: 10px;">النتيجة:</h3>
+                            <p id="ai-output" style="color: #ccc; line-height: 1.8;"></p>
+                            <button class="btn-gold" onclick="copyToEditor()" style="margin-top: 15px;">نسخ للمحرر</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Azure Tab -->
+                <div id="azure" class="tab-content">
+                    <div class="section-box">
+                        <h2>توليد محتوى بـ Azure OpenAI</h2>
+                        <div class="form-group">
+                            <label>الموضوع</label>
+                            <input type="text" id="ai-topic-azure" placeholder="أدخل الموضوع...">
+                        </div>
+                        <button class="btn-gold" onclick="generateWithAI('azure')"><i class="fas fa-sparkles"></i> توليد المقالة</button>
+                        <div id="ai-result-azure" style="margin-top: 20px; padding: 15px; background: #1a1a1a; border-radius: 5px; display: none;">
+                            <h3 style="color: var(--gold); margin-bottom: 10px;">النتيجة:</h3>
+                            <p id="ai-output-azure" style="color: #ccc; line-height: 1.8;"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Telegram Integration -->
+            <section id="telegram" class="section">
+                <h1 style="color: var(--gold); margin-bottom: 30px;">تلجرام</h1>
+                <div class="section-box">
+                    <h2>إرسال رسالة عبر تلجرام</h2>
+                    <div class="form-group">
+                        <label>الرسالة</label>
+                        <textarea id="tg-message" rows="5" placeholder="اكتب الرسالة التي تريد إرسالها..."></textarea>
+                    </div>
+                    <button class="btn-gold" onclick="sendTelegramMessage()"><i class="fab fa-telegram"></i> إرسال</button>
+                </div>
+
+                <div class="section-box" style="margin-top: 30px;">
+                    <h2>آخر الرسائل المرسلة</h2>
+                    <div id="tg-history"></div>
+                </div>
+            </section>
+
+            <!-- Categories -->
+            <section id="categories" class="section">
+                <h1 style="color: var(--gold); margin-bottom: 30px;">إدارة المجالات</h1>
+                <div class="section-box">
+                    <div id="cats-list" style="margin-bottom: 30px;"></div>
+                    <hr style="border-color: #222; margin: 20px 0;">
+                    <h3 style="color: var(--gold); margin-bottom: 15px;">إضافة مجال جديد</h3>
+                    <div class="grid-2">
+                        <input type="text" id="new-cat-name" placeholder="اسم المجال">
+                        <input type="text" id="new-cat-subs" placeholder="مجالات فرعية (اختياري)">
+                    </div>
+                    <button class="btn-gold" onclick="addCategory()" style="margin-top: 10px;">إضافة</button>
+                </div>
+            </section>
+
+            <!-- Analytics -->
+            <section id="analytics" class="section">
+                <h1 style="color: var(--gold); margin-bottom: 30px;">التحليلات المتقدمة</h1>
+                <div class="section-box">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; gap: 10px;">
+                        <select id="ana-period">
+                            <option value="7">آخر 7 أيام</option>
+                            <option value="30">آخر 30 يوم</option>
+                        </select>
+                        <button class="btn-gold" onclick="exportExcel()"><i class="fas fa-download"></i> تصدير Excel</button>
+                    </div>
+
+                    <canvas id="anaChart" height="100"></canvas>
+
+                    <table style="margin-top: 30px;">
+                        <thead>
+                            <tr>
+                                <th>العنوان</th>
+                                <th>المشاهدات</th>
+                                <th>التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ana-body"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Settings -->
+            <section id="settings" class="section">
+                <h1 style="color: var(--gold); margin-bottom: 30px;">الإعدادات</h1>
+                <div class="section-box">
+                    <h2>بيانات الاتصال</h2>
+                    <div class="form-group">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" id="set-email" placeholder="admin@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة السر</label>
+                        <input type="password" id="set-pass" placeholder="كلمة سر جديدة">
+                    </div>
+                    <button class="btn-gold" onclick="saveSettings()">حفظ الإعدادات</button>
+                </div>
+
+                <div class="section-box" style="margin-top: 30px;">
+                    <h2>خطر - مسح البيانات</h2>
+                    <p style="color: #ccc; margin-bottom: 15px;">هذا الإجراء سيمسح جميع البيانات بشكل نهائي ولا يمكن التراجع عنه.</p>
+                    <button class="btn-red" onclick="clearAllData()"><i class="fas fa-trash"></i> مسح كل البيانات</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Auth Check
+        if (localStorage.getItem('isAdmin') !== 'true') {
+            window.location.href = 'index.html';
+        } else {
+            document.body.classList.add('authorized');
+        }
+
+        let statsChart, anaChart;
+        let currentCategory = 'all';
+        let uploadedImagesData = [];
+
+        window.addEventListener('load', () => {
+            updateClock();
+            setInterval(updateClock, 1000);
+            initCategories();
+            loadDashboard();
+            loadTelegramHistory();
+            setupImageUpload();
+        });
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('live-clock').innerText = now.toLocaleTimeString('ar-SA');
+        }
+
+        function switchSection(id, element) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            element.classList.add('active');
+
+            if (id === 'dashboard') loadDashboard();
+            if (id === 'articles') loadArticlesTable();
+            if (id === 'analytics') loadAnalytics();
+        }
+
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            element.classList.add('active');
+        }
+
+        function logout() {
+            localStorage.removeItem('isAdmin');
+            window.location.href = 'index.html';
+        }
+
+        // Image Upload
+        function setupImageUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            uploadArea.addEventListener('click', () => document.getElementById('imageInput').click());
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            document.getElementById('uploadArea').classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            processFiles(files);
+        }
+
+        function handleFileSelect(e) {
+            processFiles(e.target.files);
+        }
+
+        function processFiles(files) {
+            for (let file of files) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const imageData = {
+                            id: Date.now() + Math.random(),
+                            src: e.target.result,
+                            name: file.name
+                        };
+                        uploadedImagesData.push(imageData);
+                        displayUploadedImages();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+        function displayUploadedImages() {
+            const container = document.getElementById('uploadedImages');
+            container.innerHTML = uploadedImagesData.map(img => `
+                <div class="image-item">
+                    <img src="${img.src}" alt="${img.name}">
+                    <button class="delete-btn" onclick="deleteImage(${img.id})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteImage(id) {
+            uploadedImagesData = uploadedImagesData.filter(img => img.id !== id);
+            displayUploadedImages();
+        }
+
+        // Dashboard
+        function loadDashboard() {
+            const articles = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+            const sessions = JSON.parse(localStorage.getItem('readSessions') || '[]');
+            
+            document.getElementById('stat-articles').innerText = articles.length;
+            const totalViews = articles.reduce((sum, a) => sum + (a.views || 0), 0);
+            document.getElementById('stat-views').innerText = totalViews;
+            const totalImages = articles.reduce((sum, a) => sum + (a.images ? a.images.length : 0), 0);
+            document.getElementById('stat-images').innerText = totalImages;
+
+            const recent = [...articles].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+            const top = [...articles].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
+
+            document.getElementById('recent-list').innerHTML = recent.map(a => 
+                `<div style="padding:10px; border-bottom:1px solid #222; display:flex; justify-content:space-between;">
+                    <span>${a.title}</span>
+                    <small style="color:#888;">${new Date(a.date).toLocaleDateString('ar-SA')}</small>
+                </div>`
+            ).join('') || '<p style="color:#888;">لا توجد مقالات</p>';
+
+            document.getElementById('top-list').innerHTML = top.map(a => 
+                `<div style="padding:10px; border-bottom:1px solid #222; display:flex; justify-content:space-between;">
+                    <span>${a.title}</span>
+                    <span style="color:var(--gold);">👁 ${a.views || 0}</span>
+                </div>`
+            ).join('') || '<p style="color:#888;">لا توجد مقالات</p>';
+
+            const ctx = document.getElementById('statsChart').getContext('2d');
+            if (statsChart) statsChart.destroy();
+            statsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+                    datasets: [{
+                        label: 'المشاهدات اليومية',
+                        data: [12, 19, 3, 5, 2, 3, 9],
+                        borderColor: '#D4AF37',
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: '#fff' } } },
+                    scales: {
+                        y: { ticks: { color: '#fff' }, grid: { color: '#222' } },
+                        x: { ticks: { color: '#fff' }, grid: { color: '#222' } }
+                    }
+                }
+            });
+        }
+
+        // Publish
+        function publishArticle() {
+            const title = document.getElementById('pub-title').value;
+            const content = document.getElementById('pub-content').value;
+            const description = document.getElementById('pub-description').value;
+            const tag = document.getElementById('pub-tag').value;
+            
+            if (!title || !content || !tag) {
+                alert('الرجاء ملء جميع الحقول المطلوبة');
+                return;
+            }
+
+            const newArticle = {
+                id: Date.now(),
+                title,
+                content,
+                description,
+                tag,
+                views: 0,
+                date: new Date().toISOString(),
+                hijriDate: '1447/10/15',
+                images: uploadedImagesData
+            };
+
+            let articles = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+            articles.push(newArticle);
+            localStorage.setItem('alshanfricc_articles', JSON.stringify(articles));
+
+            alert('تم نشر المقالة بنجاح!');
+            document.getElementById('pub-title').value = '';
+            document.getElementById('pub-content').value = '';
+            document.getElementById('pub-description').value = '';
+            document.getElementById('pub-tag').value = '';
+            uploadedImagesData = [];
+            displayUploadedImages();
+        }
+
+        function aiTool(type) {
+            const content = document.getElementById('pub-content').value;
+            if (!content) {
+                alert('الرجاء كتابة محتوى أولاً');
+                return;
+            }
+
+            if (type === 'toc') {
+                const enhanced = "## مقدمة\n" + content + "\n## الخاتمة";
+                document.getElementById('pub-content').value = enhanced;
+                alert('تم إضافة الفهرس تلقائياً!');
+            } else if (type === 'expand') {
+                const expanded = content + "\n\n[محتوى موسع - يمكنك إضافة المزيد من التفاصيل هنا]";
+                document.getElementById('pub-content').value = expanded;
+                alert('تم توسيع المحتوى!');
+            }
+        }
+
+        // AI Generation
+        async function generateWithAI(type) {
+            const topic = type === 'gpt' ? document.getElementById('ai-topic').value : document.getElementById('ai-topic-azure').value;
+            const words = type === 'gpt' ? document.getElementById('ai-words').value : '500';
+
+            if (!topic) {
+                alert('أدخل الموضوع أولاً');
+                return;
+            }
+
+            const mockContent = `هذا محتوى تجريبي عن "${topic}". في التطبيق الحقيقي، سيتم توليد محتوى احترافي من خلال OpenAI API. يمكنك استخدام هذا المحتوى كنموذج أولي.`;
+            
+            if (type === 'gpt') {
+                document.getElementById('ai-output').innerText = mockContent;
+                document.getElementById('ai-result').style.display = 'block';
+            } else {
+                document.getElementById('ai-output-azure').innerText = mockContent;
+                document.getElementById('ai-result-azure').style.display = 'block';
+            }
+        }
+
+        function copyToEditor() {
+            const content = document.getElementById('ai-output').innerText;
+            document.getElementById('pub-content').value = content;
+            alert('تم نسخ المحتوى للمحرر!');
+        }
+
+        // Telegram
+        function sendTelegramMessage() {
+            const message = document.getElementById('tg-message').value;
+            if (!message) {
+                alert('اكتب الرسالة أولاً');
+                return;
+            }
+
+            alert('تم إرسال الرسالة بنجاح!');
+            document.getElementById('tg-message').value = '';
+            
+            let history = JSON.parse(localStorage.getItem('tg-history') || '[]');
+            history.push({ message, date: new Date().toISOString() });
+            localStorage.setItem('tg-history', JSON.stringify(history));
+            loadTelegramHistory();
+        }
+
+        function loadTelegramHistory() {
+            const history = JSON.parse(localStorage.getItem('tg-history') || '[]');
+            const container = document.getElementById('tg-history');
+            container.innerHTML = history.slice(-5).reverse().map(h => `
+                <div style="padding:10px; border-bottom:1px solid #222;">
+                    <p style="color:#ccc;">${h.message}</p>
+                    <small style="color:#888;">${new Date(h.date).toLocaleString('ar-SA')}</small>
+                </div>
+            `).join('') || '<p style="color:#888;">لا توجد رسائل</p>';
+        }
+
+        // Articles
+        function loadArticlesTable() {
+            const articles = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+            const categories = [...new Set(articles.map(a => a.tag))];
+            
+            // Generate category tabs
+            const tabsContainer = document.getElementById('categoryTabs');
+            tabsContainer.innerHTML = `
+                <button class="tab-btn active" onclick="filterByCategory('all', this)">الكل</button>
+                ${categories.map(cat => `
+                    <button class="tab-btn" onclick="filterByCategory('${cat}', this)">${cat}</button>
+                `).join('')}
+            `;
+
+            displayArticles(articles);
+        }
+
+        function filterByCategory(category, element) {
+            currentCategory = category;
+            document.querySelectorAll('#categoryTabs .tab-btn').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+            
+            const articles = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+            const filtered = category === 'all' ? articles : articles.filter(a => a.tag === category);
+            displayArticles(filtered);
+        }
+
+        function displayArticles(articles) {
+            const body = document.getElementById('articles-body');
+            body.innerHTML = articles.map(a => `
+                <tr>
+                    <td>${a.title}</td>
+                    <td><span class="tag">${a.tag}</span></td>
+                    <td>${a.views || 0}</td>
+                    <td>${a.images ? a.images.length : 0}</td>
+                    <td>${new Date(a.date).toLocaleDateString('ar-SA')}</td>
+                    <td>
+                        <button class="btn-red btn-small" onclick="deleteArticle(${a.id})">حذف</button>
+                    </td>
+                </tr>
+            `).join('') || '<tr><td colspan="6" style="text-align:center; color:#888;">لا توجد مقالات</td></tr>';
+        }
+
+        function filterArticles() {
+            const search = document.getElementById('art-search').value.toLowerCase();
+            const articles = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+            const filtered = articles.filter(a => a.title.toLowerCase().includes(search));
+            displayArticles(filtered);
+        }
+
+        function deleteArticle(id) {
+            if (confirm('هل أنت متأكد من حذف هذه المقالة؟')) {
+                let articles = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+                articles = articles.filter(a => a.id !== id);
+                localStorage.setItem('alshanfricc_articles', JSON.stringify(articles));
+                loadArticlesTable();
+            }
+        }
+
+        // Categories
+        function initCategories() {
+            const defaultCats = [
+                { name: 'ذكاء اصطناعي', subs: 'تعلم الآلة, روبوتات' },
+                { name: 'تقنية', subs: 'هواتف, حواسيب' },
+                { name: 'استثمار', subs: 'أسهم, عملات' }
+            ];
+            const cats = JSON.parse(localStorage.getItem('cats')) || defaultCats;
+            localStorage.setItem('cats', JSON.stringify(cats));
+            displayCategories();
+            updateCategorySelect();
+        }
+
+        function displayCategories() {
+            const cats = JSON.parse(localStorage.getItem('cats') || '[]');
+            const list = document.getElementById('cats-list');
+            list.innerHTML = cats.map(c => `
+                <div style="display:flex; justify-content:space-between; padding:15px; background:#1a1a1a; margin-bottom:10px; border-radius:5px;">
+                    <div>
+                        <strong style="color:var(--gold)">${c.name}</strong>
+                        <small style="color:#888; display:block; margin-top:5px;">${c.subs}</small>
+                    </div>
+                    <button class="btn-red" onclick="deleteCategory('${c.name}')">حذف</button>
+                </div>
+            `).join('');
+        }
+
+        function updateCategorySelect() {
+            const cats = JSON.parse(localStorage.getItem('cats') || '[]');
+            const select = document.getElementById('pub-tag');
+            select.innerHTML = `<option value="">اختر المجال...</option>` + cats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+        }
+
+        function addCategory() {
+            const name = document.getElementById('new-cat-name').value;
+            const subs = document.getElementById('new-cat-subs').value;
+            if (!name) {
+                alert('أدخل اسم المجال');
+                return;
+            }
+            let cats = JSON.parse(localStorage.getItem('cats') || '[]');
+            cats.push({ name, subs });
+            localStorage.setItem('cats', JSON.stringify(cats));
+            document.getElementById('new-cat-name').value = '';
+            document.getElementById('new-cat-subs').value = '';
+            displayCategories();
+            updateCategorySelect();
+        }
+
+        function deleteCategory(name) {
+            if (confirm('هل أنت متأكد؟')) {
+                let cats = JSON.parse(localStorage.getItem('cats') || '[]');
+                cats = cats.filter(c => c.name !== name);
+                localStorage.setItem('cats', JSON.stringify(cats));
+                displayCategories();
+                updateCategorySelect();
+            }
+        }
+
+        // Analytics
+        function loadAnalytics() {
+            const articles = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+            const body = document.getElementById('ana-body');
+            body.innerHTML = articles.map(a => `
+                <tr>
+                    <td>${a.title}</td>
+                    <td>${a.views || 0}</td>
+                    <td>${new Date(a.date).toLocaleDateString('ar-SA')}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="3" style="text-align:center; color:#888;">لا توجد بيانات</td></tr>';
+
+            const ctx = document.getElementById('anaChart').getContext('2d');
+            if (anaChart) anaChart.destroy();
+            anaChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: articles.slice(0, 5).map(a => a.title.substring(0, 15)),
+                    datasets: [{
+                        label: 'المشاهدات',
+                        data: articles.slice(0, 5).map(a => a.views || 0),
+                        backgroundColor: '#D4AF37'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: '#fff' } } },
+                    scales: {
+                        y: { ticks: { color: '#fff' }, grid: { color: '#222' } },
+                        x: { ticks: { color: '#fff' }, grid: { color: '#222' } }
+                    }
+                }
+            });
+        }
+
+        function exportExcel() {
+            const articles = JSON.parse(localStorage.getItem('alshanfricc_articles') || '[]');
+            const ws = XLSX.utils.json_to_sheet(articles.map(a => ({
+                العنوان: a.title,
+                المجال: a.tag,
+                المشاهدات: a.views,
+                الصور: a.images ? a.images.length : 0,
+                التاريخ: new Date(a.date).toLocaleDateString('ar-SA')
+            })));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Articles");
+            XLSX.writeFile(wb, "alshanfricc_report.xlsx");
+        }
+
+        // Settings
+        function saveSettings() {
+            const email = document.getElementById('set-email').value;
+            const pass = document.getElementById('set-pass').value;
+            if (email) localStorage.setItem('adminEmail', email);
+            if (pass) localStorage.setItem('adminPass', pass);
+            alert('تم حفظ الإعدادات');
+        }
+
+        function clearAllData() {
+            if (confirm('هذا سيمسح جميع البيانات بشكل نهائي! هل أنت متأكد؟')) {
+                if (confirm('تأكيد نهائي - سيتم مسح كل شيء')) {
+                    localStorage.clear();
+                    window.location.href = 'index.html';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
