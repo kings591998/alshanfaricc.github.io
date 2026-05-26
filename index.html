@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>أوج | معرض المشاريع والأدوات الديناميكية</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #050505;
+            color: #eef;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            direction: rtl;
+        }
+        header {
+            background: rgba(5,5,5,0.96);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(212,175,55,0.2);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo { font-size: 2rem; color: #D4AF37; font-weight: bold; cursor: pointer; }
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+        }
+        .nav-tab {
+            background: transparent;
+            border: 1px solid #2a2a35;
+            color: #aaa;
+            padding: 0.4rem 1.2rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-tab.active {
+            background: #D4AF37;
+            color: #000;
+            border-color: #D4AF37;
+        }
+        .auth-buttons button {
+            background: #1e2a3a;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            color: white;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        .auth-buttons button.admin {
+            background: #D4AF37;
+            color: #000;
+        }
+        .container { max-width: 1300px; margin: auto; padding: 2rem 5%; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; color: #D4AF37; margin-bottom: 0.5rem; }
+        .hero p { color: #aaa; }
+        
+        /* الأقسام (معرض المشاريع / منصة الأدوات) */
+        .section { display: none; }
+        .section.active { display: block; }
+        
+        /* أنماط الأدوات والمشاريع */
+        .tools-grid, .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.8rem;
+            margin-top: 2rem;
+        }
+        .tool-card, .project-card {
+            background: #0C0F17;
+            border-radius: 1.2rem;
+            overflow: hidden;
+            border-right: 4px solid #D4AF37;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .tool-card:hover, .project-card:hover { transform: translateY(-5px); }
+        .tool-preview, .project-preview {
+            width: 100%;
+            height: 140px;
+            background: #1a1c25;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tool-info, .project-info { padding: 1rem; }
+        .tool-name, .project-name { font-size: 1.3rem; color: #D4AF37; font-weight: bold; margin-bottom: 0.3rem; }
+        .tool-desc, .project-desc { font-size: 0.85rem; color: #aaa; margin-bottom: 0.5rem; }
+        .tool-meta, .project-meta { margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .delete-btn {
+            background: #aa2e2e;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.7rem;
+            border-radius: 1rem;
+            cursor: pointer;
+        }
+        .admin-panel {
+            background: #0C0F17;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #2a2a35;
+            display: none;
+        }
+        .admin-panel.show { display: block; }
+        .form-group { margin-bottom: 1rem; }
+        input, textarea, select {
+            width: 100%;
+            padding: 0.8rem;
+            background: #1a1c25;
+            border: 1px solid #2a2a35;
+            border-radius: 1rem;
+            color: white;
+        }
+        button {
+            background: #D4AF37;
+            color: #000;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .iframe-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            flex-direction: column;
+        }
+        .iframe-modal.active { display: flex; }
+        .iframe-header {
+            background: #0C0F17;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #D4AF37;
+        }
+        .iframe-container { flex: 1; padding: 1rem; }
+        iframe { width: 100%; height: 100%; border: none; border-radius: 1rem; background: white; }
+        .close-btn { background: #333; color: white; }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid #2a2a35;
+            margin-top: 3rem;
+            color: #666;
+        }
+        @media (max-width: 700px) {
+            .tools-grid, .projects-grid { grid-template-columns: 1fr; }
+            header { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo" id="homeLogo">AWJ | منصة المعرفة</div>
+    <div class="nav-tabs">
+        <div class="nav-tab active" data-section="projects">📁 معرض المشاريع</div>
+        <div class="nav-tab" data-section="tools">🛠️ أدوات ديناميكية</div>
+    </div>
+    <div class="auth-buttons">
+        <button id="loginBtn" class="admin">🔐 دخول الأدمن</button>
+        <button id="logoutBtn" style="display: none;">🚪 تسجيل خروج</button>
+    </div>
+</header>
+
+<div class="container">
+    <div class="hero">
+        <h1 id="sectionTitle">🚀 معرض مشاريع أوج</h1>
+        <p id="sectionDesc">استعرض المشاريع المفتوحة المصدر وجربها مباشرة</p>
+    </div>
+
+    <!-- لوحة تحكم الأدمن (تظهر بعد تسجيل الدخول) -->
+    <div id="adminPanel" class="admin-panel">
+        <h2 style="color:#D4AF37; margin-bottom: 1rem;">➕ إضافة جديدة</h2>
+        <div id="adminForm">
+            <!-- الحقول ستتغير حسب القسم النشط (مشاريع أو أدوات) -->
+        </div>
+        <div id="addStatus" style="margin-top: 0.8rem;"></div>
+    </div>
+
+    <!-- قسم معرض المشاريع -->
+    <div id="projectsSection" class="section active">
+        <div id="projectsList" class="projects-grid"></div>
+    </div>
+
+    <!-- قسم منصة الأدوات الديناميكية -->
+    <div id="toolsSection" class="section">
+        <div id="toolsList" class="tools-grid"></div>
+    </div>
+</div>
+
+<footer>
+    <p>جميع الحقوق محفوظة © 2026 | منصة أوج - معرض المشاريع والأدوات الديناميكية</p>
+</footer>
+
+<div id="previewModal" class="iframe-modal">
+    <div class="iframe-header">
+        <span id="modalTitle" style="color:#D4AF37;">معاينة</span>
+        <button class="close-btn" id="closePreviewBtn">✕ إغلاق</button>
+    </div>
+    <div class="iframe-container">
+        <iframe id="previewIframe" src="about:blank"></iframe>
+    </div>
+</div>
+
+<script>
+    // ==================== Firebase Config ====================
+    const firebaseConfig = {
+        apiKey: "AIzaSyDjgVxvtPXTn1tpr4IxOK3wOW4r3gzB1VU",
+        authDomain: "awj-website-29f16.firebaseapp.com",
+        projectId: "awj-website-29f16",
+        storageBucket: "awj-website-29f16.firebasestorage.app",
+        messagingSenderId: "406747568578",
+        appId: "1:406747568578:web:741821d3c60df0011b5e5b",
+        measurementId: "G-DFB0GYH7LN"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    let currentUser = null;
+    let currentSection = 'projects'; // 'projects' or 'tools'
+    let projects = [];
+    let tools = [];
+
+    // ==================== عناصر DOM ====================
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const adminPanel = document.getElementById('adminPanel');
+    const adminForm = document.getElementById('adminForm');
+    const addStatus = document.getElementById('addStatus');
+    const projectsSection = document.getElementById('projectsSection');
+    const toolsSection = document.getElementById('toolsSection');
+    const projectsList = document.getElementById('projectsList');
+    const toolsList = document.getElementById('toolsList');
+    const sectionTitle = document.getElementById('sectionTitle');
+    const sectionDesc = document.getElementById('sectionDesc');
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const previewModal = document.getElementById('previewModal');
+    const previewIframe = document.getElementById('previewIframe');
+    const modalTitle = document.getElementById('modalTitle');
+    const closePreviewBtn = document.getElementById('closePreviewBtn');
+    const homeLogo = document.getElementById('homeLogo');
+
+    // ==================== تبديل الأقسام ====================
+    function switchSection(section) {
+        currentSection = section;
+        if (section === 'projects') {
+            projectsSection.classList.add('active');
+            toolsSection.classList.remove('active');
+            sectionTitle.innerText = '🚀 معرض مشاريع أوج';
+            sectionDesc.innerText = 'استعرض المشاريع المفتوحة المصدر وجربها مباشرة';
+            renderAdminForm(); // تحديث نموذج الإدارة
+            loadProjects();
+        } else {
+            projectsSection.classList.remove('active');
+            toolsSection.classList.add('active');
+            sectionTitle.innerText = '🛠️ منصة الأدوات الديناميكية';
+            sectionDesc.innerText = 'مجموعة من الأدوات والتطبيقات المساعدة المتنوعة';
+            renderAdminForm();
+            loadTools();
+        }
+        // تحديث التبويبات النشطة
+        navTabs.forEach(tab => {
+            if (tab.dataset.section === section) tab.classList.add('active');
+            else tab.classList.remove('active');
+        });
+    }
+
+    navTabs.forEach(tab => {
+        tab.onclick = () => switchSection(tab.dataset.section);
+    });
+    homeLogo.onclick = () => switchSection('projects');
+
+    // ==================== عرض نموذج الإدارة حسب القسم ====================
+    function renderAdminForm() {
+        if (!currentUser) return;
+        if (currentSection === 'projects') {
+            adminForm.innerHTML = `
+                <div class="form-group"><input type="text" id="projName" placeholder="اسم المشروع"></div>
+                <div class="form-group"><textarea id="projDesc" rows="2" placeholder="وصف المشروع (اختياري)"></textarea></div>
+                <div class="form-group"><input type="text" id="projUrl" placeholder="رابط المشروع (GitHub أو موقع المعاينة)"></div>
+                <div class="form-group"><input type="text" id="projImage" placeholder="رابط صورة مصغرة (اختياري)"></div>
+                <button id="addProjectBtn">➕ إضافة مشروع</button>
+            `;
+            document.getElementById('addProjectBtn')?.addEventListener('click', addProject);
+        } else {
+            adminForm.innerHTML = `
+                <div class="form-group"><input type="text" id="toolName" placeholder="اسم الأداة"></div>
+                <div class="form-group"><textarea id="toolDesc" rows="2" placeholder="وصف الأداة (اختياري)"></textarea></div>
+                <div class="form-group"><input type="text" id="toolUrl" placeholder="رابط الأداة (iframe أو صفحة خارجية)"></div>
+                <div class="form-group"><input type="text" id="toolImage" placeholder="رابط صورة مصغرة (اختياري)"></div>
+                <div class="form-group"><select id="toolType"><option value="iframe">iframe (معاينة مباشرة)</option><option value="link">رابط خارجي (يفتح في نافذة جديدة)</option></select></div>
+                <button id="addToolBtn">➕ إضافة أداة</button>
+            `;
+            document.getElementById('addToolBtn')?.addEventListener('click', addTool);
+        }
+    }
+
+    // ==================== معرض المشاريع (نفس الكود السابق مع تعديلات بسيطة) ====================
+    async function loadProjects() {
+        const snapshot = await db.collection('playground_projects').orderBy('createdAt', 'desc').get();
+        projects = [];
+        snapshot.forEach(doc => projects.push({ id: doc.id, ...doc.data() }));
+        renderProjects();
+    }
+    function renderProjects() {
+        if (!projects.length) { projectsList.innerHTML = '<div style="text-align:center; padding:2rem;">📭 لا توجد مشاريع حتى الآن. أضف مشروعك الأول!</div>'; return; }
+        let html = '';
+        projects.forEach(proj => {
+            html += `
+                <div class="project-card" data-id="${proj.id}" data-url="${proj.url || ''}">
+                    <div class="project-preview">
+                        ${proj.image ? `<img src="${proj.image}" style="width:100%; height:100%; object-fit:cover;">` : '<i class="fas fa-code" style="font-size: 3rem; color: #D4AF37;"></i>'}
+                    </div>
+                    <div class="project-info">
+                        <div class="project-name">${escapeHtml(proj.name)}</div>
+                        <div class="project-desc">${escapeHtml(proj.description || 'لا يوجد وصف')}</div>
+                        <div class="project-meta">
+                            <span><i class="fas fa-external-link-alt"></i> عرض المشروع</span>
+                            ${currentUser ? `<span class="delete-btn" data-id="${proj.id}" data-type="project">🗑️ حذف</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        projectsList.innerHTML = html;
+        attachProjectEvents();
+    }
+    function attachProjectEvents() {
+        document.querySelectorAll('.project-card').forEach(card => {
+            const url = card.dataset.url;
+            if (url) card.addEventListener('click', (e) => { if (!e.target.classList.contains('delete-btn')) openPreview(card.dataset.id, 'project'); });
+            const del = card.querySelector('.delete-btn');
+            if (del) del.addEventListener('click', (e) => { e.stopPropagation(); deleteItem(del.dataset.id, 'project'); });
+        });
+    }
+
+    async function addProject() {
+        if (!currentUser) return alert("يجب تسجيل الدخول كمدير أولاً");
+        const name = document.getElementById('projName').value.trim();
+        const desc = document.getElementById('projDesc').value.trim();
+        const url = document.getElementById('projUrl').value.trim();
+        const image = document.getElementById('projImage').value.trim();
+        if (!name || !url) { addStatus.innerHTML = '<span style="color:#ff8888;">❌ اسم المشروع والرابط مطلوبان</span>'; return; }
+        try {
+            await db.collection('playground_projects').add({ name, description: desc, url, image: image || null, createdAt: firebase.firestore.FieldValue.serverTimestamp(), createdBy: currentUser.uid });
+            addStatus.innerHTML = '<span style="color:#88ff88;">✅ تمت الإضافة بنجاح</span>';
+            clearProjectForm();
+            loadProjects();
+            setTimeout(() => addStatus.innerHTML = '', 2000);
+        } catch(e) { addStatus.innerHTML = `<span style="color:#ff8888;">❌ خطأ: ${e.message}</span>`; }
+    }
+    function clearProjectForm() {
+        if (document.getElementById('projName')) document.getElementById('projName').value = '';
+        if (document.getElementById('projDesc')) document.getElementById('projDesc').value = '';
+        if (document.getElementById('projUrl')) document.getElementById('projUrl').value = '';
+        if (document.getElementById('projImage')) document.getElementById('projImage').value = '';
+    }
+
+    // ==================== منصة الأدوات الديناميكية (قابلة للتوسع) ====================
+    async function loadTools() {
+        const snapshot = await db.collection('dynamic_tools').orderBy('createdAt', 'desc').get();
+        tools = [];
+        snapshot.forEach(doc => tools.push({ id: doc.id, ...doc.data() }));
+        renderTools();
+    }
+    function renderTools() {
+        if (!tools.length) { toolsList.innerHTML = '<div style="text-align:center; padding:2rem;">🛠️ لا توجد أدوات بعد. أضف أداة جديدة!</div>'; return; }
+        let html = '';
+        tools.forEach(tool => {
+            html += `
+                <div class="tool-card" data-id="${tool.id}" data-url="${tool.url || ''}" data-type="${tool.type || 'iframe'}">
+                    <div class="tool-preview">
+                        ${tool.image ? `<img src="${tool.image}" style="width:100%; height:100%; object-fit:cover;">` : '<i class="fas fa-cogs" style="font-size: 3rem; color: #D4AF37;"></i>'}
+                    </div>
+                    <div class="tool-info">
+                        <div class="tool-name">${escapeHtml(tool.name)}</div>
+                        <div class="tool-desc">${escapeHtml(tool.description || 'لا يوجد وصف')}</div>
+                        <div class="tool-meta">
+                            <span><i class="fas fa-external-link-alt"></i> استخدام الأداة</span>
+                            ${currentUser ? `<span class="delete-btn" data-id="${tool.id}" data-type="tool">🗑️ حذف</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        toolsList.innerHTML = html;
+        attachToolEvents();
+    }
+    function attachToolEvents() {
+        document.querySelectorAll('.tool-card').forEach(card => {
+            const url = card.dataset.url;
+            if (url) card.addEventListener('click', (e) => { if (!e.target.classList.contains('delete-btn')) openTool(card.dataset.id); });
+            const del = card.querySelector('.delete-btn');
+            if (del) del.addEventListener('click', (e) => { e.stopPropagation(); deleteItem(del.dataset.id, 'tool'); });
+        });
+    }
+    function openTool(toolId) {
+        const tool = tools.find(t => t.id == toolId);
+        if (!tool || !tool.url) return;
+        if (tool.type === 'iframe') {
+            modalTitle.innerText = `🛠️ ${tool.name}`;
+            previewIframe.src = tool.url;
+            previewModal.classList.add('active');
+        } else {
+            window.open(tool.url, '_blank');
+        }
+    }
+    async function addTool() {
+        if (!currentUser) return alert("يجب تسجيل الدخول كمدير أولاً");
+        const name = document.getElementById('toolName').value.trim();
+        const desc = document.getElementById('toolDesc').value.trim();
+        const url = document.getElementById('toolUrl').value.trim();
+        const image = document.getElementById('toolImage').value.trim();
+        const type = document.getElementById('toolType').value;
+        if (!name || !url) { addStatus.innerHTML = '<span style="color:#ff8888;">❌ اسم الأداة والرابط مطلوبان</span>'; return; }
+        try {
+            await db.collection('dynamic_tools').add({ name, description: desc, url, image: image || null, type, createdAt: firebase.firestore.FieldValue.serverTimestamp(), createdBy: currentUser.uid });
+            addStatus.innerHTML = '<span style="color:#88ff88;">✅ تمت إضافة الأداة بنجاح</span>';
+            clearToolForm();
+            loadTools();
+            setTimeout(() => addStatus.innerHTML = '', 2000);
+        } catch(e) { addStatus.innerHTML = `<span style="color:#ff8888;">❌ خطأ: ${e.message}</span>`; }
+    }
+    function clearToolForm() {
+        if (document.getElementById('toolName')) document.getElementById('toolName').value = '';
+        if (document.getElementById('toolDesc')) document.getElementById('toolDesc').value = '';
+        if (document.getElementById('toolUrl')) document.getElementById('toolUrl').value = '';
+        if (document.getElementById('toolImage')) document.getElementById('toolImage').value = '';
+    }
+
+    // ==================== حذف عنصر (مشروع أو أداة) ====================
+    async function deleteItem(id, collection) {
+        if (!currentUser) return;
+        const confirmMsg = collection === 'project' ? 'حذف هذا المشروع نهائياً؟' : 'حذف هذه الأداة نهائياً؟';
+        if (confirm(confirmMsg)) {
+            await db.collection(collection === 'project' ? 'playground_projects' : 'dynamic_tools').doc(id).delete();
+            if (collection === 'project') loadProjects();
+            else loadTools();
+        }
+    }
+
+    // ==================== معاينة المشاريع (iframe) ====================
+    function openPreview(projectId, type) {
+        const project = projects.find(p => p.id == projectId);
+        if (!project || !project.url) return;
+        modalTitle.innerText = `📁 ${project.name}`;
+        previewIframe.src = project.url;
+        previewModal.classList.add('active');
+    }
+    function closePreview() { previewModal.classList.remove('active'); previewIframe.src = 'about:blank'; }
+    closePreviewBtn.onclick = closePreview;
+    window.onclick = (e) => { if (e.target === previewModal) closePreview(); };
+
+    // ==================== المصادقة ====================
+    auth.onAuthStateChanged(user => {
+        currentUser = user;
+        if (user) {
+            loginBtn.style.display = 'none';
+            logoutBtn.style.display = 'inline-block';
+            adminPanel.classList.add('show');
+            renderAdminForm();
+            if (currentSection === 'projects') loadProjects();
+            else loadTools();
+        } else {
+            loginBtn.style.display = 'inline-block';
+            logoutBtn.style.display = 'none';
+            adminPanel.classList.remove('show');
+            if (currentSection === 'projects') loadProjects();
+            else loadTools();
+        }
+    });
+    loginBtn.onclick = () => {
+        const email = prompt("📧 أدخل البريد الإلكتروني للإدارة:");
+        const pass = prompt("🔑 أدخل كلمة المرور:");
+        if (email && pass) auth.signInWithEmailAndPassword(email, pass).catch(e => alert("خطأ: " + e.message));
+    };
+    logoutBtn.onclick = () => auth.signOut();
+
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+
+    // تحميل أولي
+    loadProjects();
+    loadTools();
+</script>
+</body>
+</html>
